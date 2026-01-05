@@ -16,25 +16,28 @@
         <h1 class="text-2xl font-bold mb-4 text-center">Каталог авто из Китая</h1>
         
         <div class="grid grid-cols-2 gap-2 mb-4">
-            <select id="mark" class="p-3 rounded-xl border card" onchange="updateModels()">
+            <select id="mark" class="p-3 rounded-xl border card text-gray-800 focus:outline-none" onchange="updateModels()">
                 <option value="">Марка</option>
                 <option value="TOYOTA">Toyota</option>
                 <option value="GEELY">Geely</option>
                 <option value="ZEEKR">Zeekr</option>
                 <option value="LI AUTO">Li Auto</option>
             </select>
-            <select id="model" class="p-3 rounded-xl border card">
-                <option value="">Модель</option>
+            <select id="model" class="p-3 rounded-xl border card text-gray-800 focus:outline-none">
+                <option value="">Все модели</option>
             </select>
         </div>
-        <button onclick="loadCars()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-lg active:scale-95 transition-all">ПОКАЗАТЬ АВТО</button>
+        <button onclick="loadCars()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg active:scale-95 transition-all">НАЙТИ МАШИНЫ</button>
 
-        <div id="list" class="mt-6 grid grid-cols-1 gap-4 pb-10"></div>
+        <div id="list" class="mt-6 grid grid-cols-1 gap-4 pb-10">
+            <p class="text-center text-gray-500">Выберите марку и нажмите поиск</p>
+        </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
+        tg.ready();
 
         const modelData = {
             "TOYOTA": ["Camry", "RAV4", "Levin", "Highlander"],
@@ -58,33 +61,38 @@
             const mark = document.getElementById('mark').value;
             const model = document.getElementById('model').value;
             const list = document.getElementById('list');
-            list.innerHTML = '<p class="text-center py-10 text-gray-500">Загрузка данных из Китая...</p>';
+            list.innerHTML = '<div class="text-center py-10"><div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div><p class="mt-2">Связь с Китаем...</p></div>';
 
             try {
-                // ЗАМЕНИ НА СВОЙ PRODUCTION URL ИЗ N8N (Webhook)
-                const res = await fetch(`https://https://plifartorikern.beget.app/webhook-test/get-cars/webhook/get-cars?mark=${mark}&model=${model}`);
+                // ВСТАВЬ СЮДА СВОЙ PRODUCTION URL ИЗ УЗЛА WEBHOOK (N8N)
+                const res = await fetch(`https://https://plifartorikern.beget.app/webhook-test/get-cars/get-cars?mark=${mark}&model=${model}`);
                 const data = await res.json();
 
                 list.innerHTML = '';
-                if (data.length === 0) { list.innerHTML = '❌ Ничего не найдено'; return; }
+                if (!data || data.length === 0) {
+                    list.innerHTML = '<div class="text-center p-10 bg-white rounded-2xl">❌ По вашему запросу ничего не найдено</div>';
+                    return;
+                }
 
                 data.forEach(car => {
                     list.innerHTML += `
                         <div class="card rounded-2xl shadow-sm overflow-hidden border border-gray-100">
                             <img src="${car.photo}" class="w-full h-48 object-cover">
                             <div class="p-4">
-                                <h3 class="font-bold text-lg">${car.name}</h3>
-                                <p class="text-sm opacity-70">${car.year} г. | ${car.km} км</p>
-                                <div class="mt-3 flex justify-between items-end">
+                                <h3 class="font-bold text-lg text-gray-900">${car.name}</h3>
+                                <p class="text-sm text-gray-500">${car.year} г. | ${car.km} км</p>
+                                <div class="mt-3 flex justify-between items-center">
                                     <span class="text-blue-600 font-extrabold text-xl">${car.priceRub} ₽</span>
-                                    <a href="${car.url}" class="bg-gray-100 text-gray-800 text-xs px-3 py-2 rounded-lg font-semibold">Источник</a>
+                                    <a href="${car.url}" target="_blank" class="bg-blue-50 text-blue-700 text-xs px-4 py-2 rounded-lg font-bold">ОРИГИНАЛ</a>
                                 </div>
                             </div>
                         </div>`;
                 });
-            } catch (e) { list.innerHTML = '❌ Ошибка сети. Проверьте CORS в n8n.'; }
+            } catch (e) { 
+                list.innerHTML = '<div class="text-center p-10 bg-red-50 text-red-600 rounded-2xl">❌ Ошибка загрузки. Попробуйте позже.</div>';
+                console.error('CORS Error Check:', e);
+            }
         }
     </script>
 </body>
-
 </html>
