@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Asia Car Trust</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: var(--tg-theme-secondary-bg-color, #f0f2f5); color: var(--tg-theme-text-color, #000); }
+        .card { background-color: var(--tg-theme-bg-color, #fff); }
+    </style>
+</head>
+<body class="p-3">
+    <div class="max-w-md mx-auto">
+        <h1 class="text-2xl font-bold mb-4 text-center">Каталог авто из Китая</h1>
+        
+        <div class="grid grid-cols-2 gap-2 mb-4">
+            <select id="mark" class="p-3 rounded-xl border card" onchange="updateModels()">
+                <option value="">Марка</option>
+                <option value="TOYOTA">Toyota</option>
+                <option value="GEELY">Geely</option>
+                <option value="ZEEKR">Zeekr</option>
+                <option value="LI AUTO">Li Auto</option>
+            </select>
+            <select id="model" class="p-3 rounded-xl border card">
+                <option value="">Модель</option>
+            </select>
+        </div>
+        <button onclick="loadCars()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-lg active:scale-95 transition-all">ПОКАЗАТЬ АВТО</button>
+
+        <div id="list" class="mt-6 grid grid-cols-1 gap-4 pb-10"></div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        const modelData = {
+            "TOYOTA": ["Camry", "RAV4", "Levin", "Highlander"],
+            "GEELY": ["Monjaro", "Tugella", "Coolray", "Preface"],
+            "ZEEKR": ["001", "007", "009", "X"],
+            "LI AUTO": ["L6", "L7", "L8", "L9"]
+        };
+
+        function updateModels() {
+            const mark = document.getElementById('mark').value;
+            const modelSelect = document.getElementById('model');
+            modelSelect.innerHTML = '<option value="">Все модели</option>';
+            if (modelData[mark]) {
+                modelData[mark].forEach(m => {
+                    modelSelect.innerHTML += `<option value="${m.toUpperCase()}">${m}</option>`;
+                });
+            }
+        }
+
+        async function loadCars() {
+            const mark = document.getElementById('mark').value;
+            const model = document.getElementById('model').value;
+            const list = document.getElementById('list');
+            list.innerHTML = '<p class="text-center py-10 text-gray-500">Загрузка данных из Китая...</p>';
+
+            try {
+                // ЗАМЕНИ НА СВОЙ PRODUCTION URL ИЗ N8N (Webhook)
+                const res = await fetch(`https://твой-n8n-домен.com/webhook/get-cars?mark=${mark}&model=${model}`);
+                const data = await res.json();
+
+                list.innerHTML = '';
+                if (data.length === 0) { list.innerHTML = '❌ Ничего не найдено'; return; }
+
+                data.forEach(car => {
+                    list.innerHTML += `
+                        <div class="card rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+                            <img src="${car.photo}" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg">${car.name}</h3>
+                                <p class="text-sm opacity-70">${car.year} г. | ${car.km} км</p>
+                                <div class="mt-3 flex justify-between items-end">
+                                    <span class="text-blue-600 font-extrabold text-xl">${car.priceRub} ₽</span>
+                                    <a href="${car.url}" class="bg-gray-100 text-gray-800 text-xs px-3 py-2 rounded-lg font-semibold">Источник</a>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            } catch (e) { list.innerHTML = '❌ Ошибка сети. Проверьте CORS в n8n.'; }
+        }
+    </script>
+</body>
+</html>
