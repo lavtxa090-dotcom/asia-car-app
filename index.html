@@ -65,7 +65,7 @@
 
             try {
                 // ВСТАВЬ СЮДА СВОЙ PRODUCTION URL ИЗ УЗЛА WEBHOOK (N8N)
-                const res = await fetch(`https://plifartorikern.beget.app/webhook/get-cars/?mark=${mark}&model=${model}`);
+                const res = await fetch(`https://plifartorikern.beget.app/webhook/get-cars?mark=${mark}&model=${model}`);
                 const data = await res.json();
 
                 list.innerHTML = '';
@@ -97,3 +97,4 @@
 </body>
 
 </html>
+
