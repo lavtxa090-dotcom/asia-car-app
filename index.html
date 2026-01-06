@@ -2,48 +2,51 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Asia Car App</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    if (window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); }
+  </script>
 </head>
 
 <body class="min-h-screen bg-slate-950 text-slate-100">
-  <div class="max-w-4xl mx-auto p-4">
+  <div class="max-w-5xl mx-auto p-4">
     <header class="mb-4">
-      <h1 class="text-2xl font-semibold">Поиск авто (Dongchedi)</h1>
-      <p class="text-slate-300 text-sm mt-1">Марка/модель можно вводить вручную (подсказки — ниже).</p>
+      <div class="text-2xl font-semibold">Поиск авто</div>
+      <div class="text-slate-300 text-sm mt-1">Кнопки + ручной ввод.</div>
     </header>
 
     <section class="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+      <div class="text-sm text-slate-300 mb-2">Марка</div>
+      <div id="brandButtons" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2"></div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mt-4">
         <label class="block">
           <span class="text-sm text-slate-300">Марка</span>
-          <input id="brand" list="brandList"
-                 class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"
-                 placeholder="Volkswagen" value="Volkswagen" />
-          <datalist id="brandList"></datalist>
+          <input id="brandInput" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2" placeholder="Geely" />
         </label>
 
         <label class="block">
           <span class="text-sm text-slate-300">Модель</span>
-          <input id="model" list="modelList"
-                 class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"
-                 placeholder="Tayron" value="Tayron" />
-          <datalist id="modelList"></datalist>
+          <input id="modelInput" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2" placeholder="Monjaro" />
         </label>
 
         <label class="block">
           <span class="text-sm text-slate-300">Год от (опц.)</span>
-          <select id="year" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"></select>
+          <select id="yearInput" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"></select>
         </label>
 
         <div class="flex items-end">
-          <button id="btn" class="w-full rounded-lg bg-indigo-600 hover:bg-indigo-500 transition px-4 py-2 font-medium">
+          <button id="searchBtn" class="w-full rounded-lg bg-indigo-600 hover:bg-indigo-500 transition px-4 py-2 font-medium">
             Найти
           </button>
         </div>
       </div>
+
+      <div class="text-sm text-slate-300 mt-4 mb-2">Модель</div>
+      <div id="modelButtons" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2"></div>
 
       <div id="status" class="text-sm text-slate-300 mt-3"></div>
     </section>
@@ -56,75 +59,129 @@
   </div>
 
   <script>
-    const tg = window.Telegram?.WebApp;
-    if (tg) { tg.expand(); tg.ready(); }
+    const API_URL = "https://plifartorikern.beget.app/webhook/get-cars";
 
-    const N8N_BASE = "https://plifartorikern.beget.app";
-    const API_URL = `${N8N_BASE}/webhook/get-cars`;
-
-    // Подсказки (не ограничивают ввод)
+    // Кнопки (можно расширять)
     const SUGGEST = {
+      // Китайские бренды
+      "Chery": ["Tiggo 4","Tiggo 7 Pro","Tiggo 8 Pro","Arrizo 8"],
+      "Geely": ["Monjaro","Coolray","Atlas","Tugella","Okavango","Emgrand"],
+      "BYD": ["Song Plus","Qin Plus","Han","Tang","Dolphin","Yuan Plus"],
+      "Haval": ["H6","Jolion","Dargo","F7"],
+      "Changan": ["CS55 Plus","CS75 Plus","UNI-K","UNI-T","UNI-V"],
+      "GAC": ["GS8","GS4","Aion S","Aion Y"],
+      "Hongqi": ["H5","H9","E-HS9"],
+      "Jetour": ["X70","X90","T2"],
+      "Exeed": ["TXL","VX","LX"],
+      "Omoda": ["C5","E5"],
+      "Jaecoo": ["J7"],
+      "Tank": ["300","500"],
+      "Wey": ["Coffee 01"],
+      "Leapmotor": ["C11","T03"],
+      "Xpeng": ["G6","G9","P7"],
+      "Nio": ["ES6","ES8","ET5"],
+      "Li Auto": ["L7","L8","L9"],
+      "Zeekr": ["001","007","X"],
+      "Lynk & Co": ["01","03","05"],
+
+      // Остальные (твои)
       "Volkswagen": ["Tayron","Golf","Sagitar","T-ROC","Tharu","Lamando","Tiguan L","Lavida","Magotan"],
-      "Toyota": ["RAV4","Venza","Corolla","Levin","Yaris L"],
-      "Hyundai": ["Elantra","Sonata","IX35"],
+      "Toyota": ["Corolla","Camry","RAV4","Venza","Levin","Yaris L"],
       "Kia": ["Sportage 3","KX1","KX3","K3"],
-      "BMW": ["1 Series","X1"],
-      "Honda": ["Fit","Vezel","XR-V","Civic","Crider"],
-      "Audi": ["A3","Q3","Q2L","Q3 Sportback"],
-      "Skoda": ["Octavia","Octavia Pro","Kamiq","Superb"],
+      "Hyundai": ["Elantra","Sonata","IX35"],
+      "Honda": ["Fit","Vezel","XR-V","Civic"],
+      "Audi": ["A3","Q2L","Q3","Q3 Sportback"],
+      "Skoda": ["Octavia","Octavia Pro","Superb"],
       "Jetta": ["VS5","VS7"],
+      "BMW": ["1 Series","X1"],
       "Nissan": ["Qashqai","Kicks"],
       "Chevrolet": ["Orlando"],
       "Mercedes-Benz": ["A-Class"],
       "Mazda": ["3 Axela","CX4","CX30"]
     };
 
-    const brandEl = document.getElementById("brand");
-    const modelEl = document.getElementById("model");
-    const yearEl = document.getElementById("year");
-    const btnEl = document.getElementById("btn");
+    const brandButtonsEl = document.getElementById("brandButtons");
+    const modelButtonsEl = document.getElementById("modelButtons");
+    const brandInputEl = document.getElementById("brandInput");
+    const modelInputEl = document.getElementById("modelInput");
+    const yearInputEl = document.getElementById("yearInput");
+    const searchBtnEl = document.getElementById("searchBtn");
     const statusEl = document.getElementById("status");
     const resultsEl = document.getElementById("results");
     const debugEl = document.getElementById("debug");
 
+    let selectedBrand = "Geely";
+    let selectedModel = "Monjaro";
+
     function setStatus(t) { statusEl.textContent = t || ""; }
-    function fmt(x) {
-      if (x === null || x === undefined || x === "") return "—";
-      const n = Number(x);
-      if (!Number.isFinite(n)) return String(x);
-      return n.toLocaleString("ru-RU");
+
+    function renderBrandButtons() {
+      const brands = Object.keys(SUGGEST);
+      brandButtonsEl.innerHTML = brands.map(b => {
+        const active = b === selectedBrand;
+        return `
+          <button data-brand="${b}"
+            class="rounded-lg border px-3 py-2 text-sm transition
+              ${active ? "bg-indigo-600 border-indigo-500" : "bg-slate-950 border-slate-800 hover:bg-slate-900"}">
+            ${b}
+          </button>
+        `;
+      }).join("");
+
+      brandButtonsEl.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedBrand = btn.dataset.brand;
+          const list = SUGGEST[selectedBrand] || [];
+          selectedModel = list[0] || "";
+          brandInputEl.value = selectedBrand;
+          modelInputEl.value = selectedModel;
+          renderBrandButtons();
+          renderModelButtons();
+        });
+      });
+    }
+
+    function renderModelButtons() {
+      const models = SUGGEST[selectedBrand] || [];
+      modelButtonsEl.innerHTML = models.map(m => {
+        const active = m === selectedModel;
+        return `
+          <button data-model="${m}"
+            class="rounded-lg border px-3 py-2 text-sm transition
+              ${active ? "bg-emerald-600 border-emerald-500" : "bg-slate-950 border-slate-800 hover:bg-slate-900"}">
+            ${m}
+          </button>
+        `;
+      }).join("");
+
+      modelButtonsEl.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedModel = btn.dataset.model;
+          modelInputEl.value = selectedModel;
+          renderModelButtons();
+        });
+      });
     }
 
     function fillYears() {
       const current = new Date().getFullYear();
       let html = `<option value="">Любой</option>`;
       for (let y = current; y >= 2005; y--) html += `<option value="${y}">${y}</option>`;
-      yearEl.innerHTML = html;
-    }
-
-    function fillBrandDatalist() {
-      const brands = Object.keys(SUGGEST);
-      document.getElementById("brandList").innerHTML = brands.map(b => `<option value="${b}"></option>`).join("");
-    }
-
-    function fillModelDatalist() {
-      const brand = brandEl.value.trim();
-      const models = SUGGEST[brand] || [];
-      document.getElementById("modelList").innerHTML = models.map(m => `<option value="${m}"></option>`).join("");
+      yearInputEl.innerHTML = html;
+      yearInputEl.value = "2022";
     }
 
     function card(c) {
       const title = (c.name || "—").trim();
       const photo = c.photo || "https://img.dongchedi.com/img/default-car.png";
       const url = c.url || "";
-
       return `
         <article class="bg-slate-900/60 border border-slate-800 rounded-xl overflow-hidden">
           <img src="${photo}" alt="" class="w-full h-44 object-cover bg-slate-950" loading="lazy">
           <div class="p-3">
             <div class="font-medium">${title}</div>
-            <div class="text-sm text-slate-300 mt-1">Год: ${c.year ?? "—"} • Пробег: ${fmt(c.km)}</div>
-            <div class="text-lg mt-2">≈ ${fmt(c.priceRub)} ₽</div>
+            <div class="text-sm text-slate-300 mt-1">Год: ${c.year ?? "—"} • Пробег: ${c.km ?? "—"}</div>
+            <div class="text-lg mt-2">≈ ${c.priceRub ?? "—"} ₽</div>
             ${url ? `<a class="text-sm text-indigo-400 hover:text-indigo-300 mt-2 inline-block" href="${url}" target="_blank" rel="noopener">Открыть</a>` : ""}
           </div>
         </article>
@@ -132,9 +189,9 @@
     }
 
     async function loadCars() {
-      const mark = brandEl.value.trim();
-      const model = modelEl.value.trim();
-      const year = yearEl.value;
+      const mark = (brandInputEl.value || "").trim();
+      const model = (modelInputEl.value || "").trim();
+      const year = yearInputEl.value;
 
       resultsEl.innerHTML = "";
       debugEl.textContent = "";
@@ -148,10 +205,10 @@
       const url = `${API_URL}?${params.toString()}`;
 
       try {
-        const res = await fetch(url); // максимально простой GET
+        const res = await fetch(url);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
         const data = await res.json();
+
         if (!data?.ok) {
           setStatus("Backend вернул ok=false.");
           debugEl.textContent = JSON.stringify(data, null, 2);
@@ -159,7 +216,7 @@
         }
 
         const cars = Array.isArray(data.cars) ? data.cars : [];
-        setStatus(`Найдено: ${cars.length} • CNY: ${Number(data.cbrRate || 0).toFixed(4)}`);
+        setStatus(`Найдено: ${cars.length}`);
         resultsEl.innerHTML = cars.length ? cars.map(card).join("") : `<div class="text-slate-300">Ничего не найдено.</div>`;
       } catch (e) {
         setStatus("Ошибка загрузки.");
@@ -167,12 +224,28 @@
       }
     }
 
-    brandEl.addEventListener("input", fillModelDatalist);
-    btnEl.addEventListener("click", loadCars);
-
+    // init
     fillYears();
-    fillBrandDatalist();
-    fillModelDatalist();
+    brandInputEl.value = selectedBrand;
+    modelInputEl.value = selectedModel;
+    renderBrandButtons();
+    renderModelButtons();
+
+    brandInputEl.addEventListener("input", () => {
+      const v = brandInputEl.value.trim();
+      if (SUGGEST[v]) {
+        selectedBrand = v;
+        renderBrandButtons();
+        renderModelButtons();
+      }
+    });
+
+    modelInputEl.addEventListener("input", () => {
+      selectedModel = modelInputEl.value.trim();
+      renderModelButtons();
+    });
+
+    searchBtnEl.addEventListener("click", loadCars);
   </script>
 </body>
 </html>
