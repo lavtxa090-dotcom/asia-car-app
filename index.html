@@ -5,29 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Asia Car App</title>
 
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
 <body class="min-h-screen bg-slate-950 text-slate-100">
-  <div class="max-w-3xl mx-auto p-4">
+  <div class="max-w-4xl mx-auto p-4">
     <header class="mb-4">
       <h1 class="text-2xl font-semibold">Поиск авто из Китая</h1>
-      <p class="text-slate-300 text-sm mt-1">Выбери марку и модель, затем нажми «Найти».</p>
+      <p class="text-slate-300 text-sm mt-1">Марка → модель → год (опционально) → «Найти».</p>
     </header>
 
     <section class="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
         <label class="block">
           <span class="text-sm text-slate-300">Марка</span>
-          <select id="brand" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2">
-            <option value="Toyota">Toyota</option>
-            <option value="Geely">Geely</option>
-            <option value="Zeekr">Zeekr</option>
-          </select>
+          <select id="brand" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"></select>
         </label>
 
         <label class="block">
@@ -35,9 +28,13 @@
           <select id="model" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"></select>
         </label>
 
+        <label class="block">
+          <span class="text-sm text-slate-300">Год от (опц.)</span>
+          <select id="year" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"></select>
+        </label>
+
         <div class="flex items-end">
-          <button id="btn"
-                  class="w-full rounded-lg bg-indigo-600 hover:bg-indigo-500 transition px-4 py-2 font-medium">
+          <button id="btn" class="w-full rounded-lg bg-indigo-600 hover:bg-indigo-500 transition px-4 py-2 font-medium">
             Найти
           </button>
         </div>
@@ -54,38 +51,36 @@
   </div>
 
   <script>
-    // Твой публичный домен n8n (важно: без завершающего /)
+    // Твой публичный домен n8n
     const N8N_BASE = "https://plifartorikern.beget.app";
-    const API_URL = `${N8N_BASE}/webhook/get-cars`; // production webhook [web:14]
+    const API_URL = `${N8N_BASE}/webhook/get-cars`;
 
-    // Значения model должны совпадать с тем, что ожидает твой backend/n8n
-    const MODELS = {
-      Toyota: [
-        { label: "Camry", value: "Camry" },
-        { label: "RAV4",  value: "RAV4" }
-      ],
-      Geely: [
-        { label: "Monjaro", value: "Monjaro" }
-      ],
-      Zeekr: [
-        { label: "001", value: "001" }
-      ]
+    // Список ходовых марок/моделей (собрано из твоего списка, без дублей)
+    const CARS = {
+      "Volkswagen": ["Tayron","Golf","Sagitar","T-ROC","Tharu","Lamando","Tiguan L","Lavida","Magotan","Taco"],
+      "Toyota": ["Venza","RAV4","Yaris L","Levin","Corolla"],
+      "Hyundai": ["Sonata","IX35","Elantra"],
+      "Kia": ["Sportage 3","KX1","KX3","K3"],
+      "BMW": ["1 Series","X1"],
+      "Honda": ["Fit","Vezel","XR-V","Civic","Crider"],
+      "Audi": ["A3","Q3","Q2L","Q3 Sportback"],
+      "Skoda": ["Octavia","Octavia Pro","Kamiq","Superb"],
+      "Jetta": ["VS5","VS7"],
+      "Nissan": ["Qashqai","Kicks"],
+      "Chevrolet": ["Orlando"],
+      "Mercedes-Benz": ["A-Class"],
+      "Mazda": ["3 Axela","CX4","CX30"]
     };
 
     const brandEl = document.getElementById("brand");
     const modelEl = document.getElementById("model");
+    const yearEl = document.getElementById("year");
     const btnEl = document.getElementById("btn");
     const statusEl = document.getElementById("status");
     const resultsEl = document.getElementById("results");
     const debugEl = document.getElementById("debug");
 
     function setStatus(t) { statusEl.textContent = t || ""; }
-
-    function renderModels() {
-      const brand = brandEl.value;
-      const list = MODELS[brand] || [];
-      modelEl.innerHTML = list.map(m => `<option value="${m.value}">${m.label}</option>`).join("");
-    }
 
     function fmt(x) {
       if (x === null || x === undefined || x === "") return "—";
@@ -116,32 +111,51 @@
       `;
     }
 
-    // Telegram Mini App: расширяем окно
-    (function initTelegram() {
+    function initTelegram() {
       const tg = window.Telegram?.WebApp;
       if (!tg) return;
       tg.expand();
       tg.ready();
-    })();
+    }
 
-    // Максимально простой fetch (чтобы не вызывать preflight):
-    // - GET
-    // - без headers
-    // - без body
-    // - без credentials
+    function fillBrands() {
+      const brands = Object.keys(CARS);
+      brandEl.innerHTML = brands.map(b => `<option value="${b}">${b}</option>`).join("");
+    }
+
+    function fillModels() {
+      const b = brandEl.value;
+      const models = CARS[b] || [];
+      modelEl.innerHTML = models.map(m => `<option value="${m}">${m}</option>`).join("");
+    }
+
+    function fillYears() {
+      const current = new Date().getFullYear();
+      const from = 2005;
+      let options = `<option value="">Любой</option>`;
+      for (let y = current; y >= from; y--) options += `<option value="${y}">${y}</option>`;
+      yearEl.innerHTML = options;
+    }
+
+    // Простой GET fetch: без headers/body/credentials → меньше шансов preflight
     async function loadCars() {
       const mark = brandEl.value;
       const model = modelEl.value;
+      const year = yearEl.value; // '' или '2020'
 
       resultsEl.innerHTML = "";
       debugEl.textContent = "";
       setStatus("Загрузка...");
 
-      const url = `${API_URL}?mark=${encodeURIComponent(mark)}&model=${encodeURIComponent(model)}`;
+      const params = new URLSearchParams();
+      params.set("mark", mark);
+      params.set("model", model);
+      if (year) params.set("year", year);
+
+      const url = `${API_URL}?${params.toString()}`;
 
       try {
         const res = await fetch(url);
-
         if (!res.ok) {
           const text = await res.text().catch(() => "");
           throw new Error(`HTTP ${res.status}. ${text.slice(0, 150)}`);
@@ -167,10 +181,13 @@
       }
     }
 
-    brandEl.addEventListener("change", renderModels);
+    brandEl.addEventListener("change", () => { fillModels(); });
     btnEl.addEventListener("click", loadCars);
 
-    renderModels();
+    initTelegram();
+    fillBrands();
+    fillModels();
+    fillYears();
   </script>
 </body>
 </html>
