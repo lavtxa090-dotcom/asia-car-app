@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Asia Car App</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
@@ -12,20 +11,26 @@
 <body class="min-h-screen bg-slate-950 text-slate-100">
   <div class="max-w-4xl mx-auto p-4">
     <header class="mb-4">
-      <h1 class="text-2xl font-semibold">Поиск авто из Китая</h1>
-      <p class="text-slate-300 text-sm mt-1">Марка → модель → год (опционально) → «Найти».</p>
+      <h1 class="text-2xl font-semibold">Поиск авто (Dongchedi)</h1>
+      <p class="text-slate-300 text-sm mt-1">Марка/модель можно вводить вручную (подсказки — ниже).</p>
     </header>
 
     <section class="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
         <label class="block">
           <span class="text-sm text-slate-300">Марка</span>
-          <select id="brand" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"></select>
+          <input id="brand" list="brandList"
+                 class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"
+                 placeholder="Volkswagen" value="Volkswagen" />
+          <datalist id="brandList"></datalist>
         </label>
 
         <label class="block">
           <span class="text-sm text-slate-300">Модель</span>
-          <select id="model" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"></select>
+          <input id="model" list="modelList"
+                 class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"
+                 placeholder="Tayron" value="Tayron" />
+          <datalist id="modelList"></datalist>
         </label>
 
         <label class="block">
@@ -51,15 +56,17 @@
   </div>
 
   <script>
-    // Твой публичный домен n8n
+    const tg = window.Telegram?.WebApp;
+    if (tg) { tg.expand(); tg.ready(); }
+
     const N8N_BASE = "https://plifartorikern.beget.app";
     const API_URL = `${N8N_BASE}/webhook/get-cars`;
 
-    // Список ходовых марок/моделей (собрано из твоего списка, без дублей)
-    const CARS = {
-      "Volkswagen": ["Tayron","Golf","Sagitar","T-ROC","Tharu","Lamando","Tiguan L","Lavida","Magotan","Taco"],
-      "Toyota": ["Venza","RAV4","Yaris L","Levin","Corolla"],
-      "Hyundai": ["Sonata","IX35","Elantra"],
+    // Подсказки (не ограничивают ввод)
+    const SUGGEST = {
+      "Volkswagen": ["Tayron","Golf","Sagitar","T-ROC","Tharu","Lamando","Tiguan L","Lavida","Magotan"],
+      "Toyota": ["RAV4","Venza","Corolla","Levin","Yaris L"],
+      "Hyundai": ["Elantra","Sonata","IX35"],
       "Kia": ["Sportage 3","KX1","KX3","K3"],
       "BMW": ["1 Series","X1"],
       "Honda": ["Fit","Vezel","XR-V","Civic","Crider"],
@@ -81,7 +88,6 @@
     const debugEl = document.getElementById("debug");
 
     function setStatus(t) { statusEl.textContent = t || ""; }
-
     function fmt(x) {
       if (x === null || x === undefined || x === "") return "—";
       const n = Number(x);
@@ -89,11 +95,26 @@
       return n.toLocaleString("ru-RU");
     }
 
+    function fillYears() {
+      const current = new Date().getFullYear();
+      let html = `<option value="">Любой</option>`;
+      for (let y = current; y >= 2005; y--) html += `<option value="${y}">${y}</option>`;
+      yearEl.innerHTML = html;
+    }
+
+    function fillBrandDatalist() {
+      const brands = Object.keys(SUGGEST);
+      document.getElementById("brandList").innerHTML = brands.map(b => `<option value="${b}"></option>`).join("");
+    }
+
+    function fillModelDatalist() {
+      const brand = brandEl.value.trim();
+      const models = SUGGEST[brand] || [];
+      document.getElementById("modelList").innerHTML = models.map(m => `<option value="${m}"></option>`).join("");
+    }
+
     function card(c) {
       const title = (c.name || "—").trim();
-      const year = c.year ?? "—";
-      const km = c.km ?? null;
-      const price = c.priceRub ?? null;
       const photo = c.photo || "https://img.dongchedi.com/img/default-car.png";
       const url = c.url || "";
 
@@ -102,46 +123,18 @@
           <img src="${photo}" alt="" class="w-full h-44 object-cover bg-slate-950" loading="lazy">
           <div class="p-3">
             <div class="font-medium">${title}</div>
-            <div class="text-sm text-slate-300 mt-1">Год: ${year} • Пробег: ${fmt(km)}</div>
-            <div class="text-lg mt-2">≈ ${fmt(price)} ₽</div>
-            ${url ? `<a class="text-sm text-indigo-400 hover:text-indigo-300 mt-2 inline-block"
-                      href="${url}" target="_blank" rel="noopener">Открыть</a>` : ""}
+            <div class="text-sm text-slate-300 mt-1">Год: ${c.year ?? "—"} • Пробег: ${fmt(c.km)}</div>
+            <div class="text-lg mt-2">≈ ${fmt(c.priceRub)} ₽</div>
+            ${url ? `<a class="text-sm text-indigo-400 hover:text-indigo-300 mt-2 inline-block" href="${url}" target="_blank" rel="noopener">Открыть</a>` : ""}
           </div>
         </article>
       `;
     }
 
-    function initTelegram() {
-      const tg = window.Telegram?.WebApp;
-      if (!tg) return;
-      tg.expand();
-      tg.ready();
-    }
-
-    function fillBrands() {
-      const brands = Object.keys(CARS);
-      brandEl.innerHTML = brands.map(b => `<option value="${b}">${b}</option>`).join("");
-    }
-
-    function fillModels() {
-      const b = brandEl.value;
-      const models = CARS[b] || [];
-      modelEl.innerHTML = models.map(m => `<option value="${m}">${m}</option>`).join("");
-    }
-
-    function fillYears() {
-      const current = new Date().getFullYear();
-      const from = 2005;
-      let options = `<option value="">Любой</option>`;
-      for (let y = current; y >= from; y--) options += `<option value="${y}">${y}</option>`;
-      yearEl.innerHTML = options;
-    }
-
-    // Простой GET fetch: без headers/body/credentials → меньше шансов preflight
     async function loadCars() {
-      const mark = brandEl.value;
-      const model = modelEl.value;
-      const year = yearEl.value; // '' или '2020'
+      const mark = brandEl.value.trim();
+      const model = modelEl.value.trim();
+      const year = yearEl.value;
 
       resultsEl.innerHTML = "";
       debugEl.textContent = "";
@@ -155,39 +148,31 @@
       const url = `${API_URL}?${params.toString()}`;
 
       try {
-        const res = await fetch(url);
-        if (!res.ok) {
-          const text = await res.text().catch(() => "");
-          throw new Error(`HTTP ${res.status}. ${text.slice(0, 150)}`);
-        }
+        const res = await fetch(url); // максимально простой GET
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         const data = await res.json();
-
-        if (!data || data.ok !== true) {
-          setStatus("Backend вернул ошибку.");
-          debugEl.textContent = `URL: ${url}\nОтвет: ${JSON.stringify(data).slice(0, 600)}`;
+        if (!data?.ok) {
+          setStatus("Backend вернул ok=false.");
+          debugEl.textContent = JSON.stringify(data, null, 2);
           return;
         }
 
         const cars = Array.isArray(data.cars) ? data.cars : [];
         setStatus(`Найдено: ${cars.length} • CNY: ${Number(data.cbrRate || 0).toFixed(4)}`);
-
-        resultsEl.innerHTML = cars.length
-          ? cars.map(card).join("")
-          : `<div class="text-slate-300">Ничего не найдено.</div>`;
+        resultsEl.innerHTML = cars.length ? cars.map(card).join("") : `<div class="text-slate-300">Ничего не найдено.</div>`;
       } catch (e) {
         setStatus("Ошибка загрузки.");
-        debugEl.textContent = `URL: ${url}\nОшибка: ${e.message}`;
+        debugEl.textContent = `Ошибка: ${e.message}`;
       }
     }
 
-    brandEl.addEventListener("change", () => { fillModels(); });
+    brandEl.addEventListener("input", fillModelDatalist);
     btnEl.addEventListener("click", loadCars);
 
-    initTelegram();
-    fillBrands();
-    fillModels();
     fillYears();
+    fillBrandDatalist();
+    fillModelDatalist();
   </script>
 </body>
 </html>
