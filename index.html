@@ -19,11 +19,9 @@
     </header>
 
     <section class="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
-      <!-- Optional: быстрые кнопки топ-брендов -->
       <div class="text-sm text-slate-300 mb-2">Быстрые бренды</div>
       <div id="quickBrands" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2"></div>
 
-      <!-- Основные списки -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mt-4">
         <label class="block">
           <span class="text-sm text-slate-300">Марка</span>
@@ -60,47 +58,60 @@
   <script>
     const API_URL = "https://plifartorikern.beget.app/webhook/get-cars";
 
-    // Список брендов/моделей для UI (можешь расширять без ограничений)
+    // Список брендов/моделей — только списки, без ручного ввода
     const SUGGEST = {
-      // Китай
-      "Chery": ["Tiggo 4","Tiggo 7 Pro","Tiggo 8 Pro","Arrizo 8"],
-      "Geely": ["Monjaro","Coolray","Atlas","Tugella","Okavango","Emgrand"],
-      "BYD": ["Song Plus","Qin Plus","Han","Tang","Dolphin","Yuan Plus"],
-      "Haval": ["H6","Jolion","Dargo","F7"],
-      "Changan": ["CS55 Plus","CS75 Plus","UNI-K","UNI-T","UNI-V"],
-      "GAC": ["GS8","GS4","Aion S","Aion Y"],
-      "Hongqi": ["H5","H9","E-HS9"],
-      "Jetour": ["X70","X90","T2"],
-      "Exeed": ["TXL","VX","LX"],
-      "Omoda": ["C5","E5"],
-      "Jaecoo": ["J7"],
-      "Tank": ["300","500"],
-      "Wey": ["Coffee 01"],
-      "Leapmotor": ["C11","T03"],
-      "Xpeng": ["G6","G9","P7"],
-      "Nio": ["ES6","ES8","ET5"],
-      "Li Auto": ["L7","L8","L9"],
-      "Zeekr": ["001","007","X"],
-      "Lynk & Co": ["01","03","05"],
+      "Volkswagen": [
+        "T-Roc","Tharu","Tharu XR","Tiguan L Pro","Tiguan X","Teramont","Teramont X","Touareg",
+        "Tayron L","Tayron X","Talagon","Tavendor","Magotan","Passat Pro","Sagitar","Lavida XR",
+        "Lamando L","Bora","Santana","CC","Polo Plus","Viloran","ID.3","ID.4 X","ID.4 CROZZ",
+        "ID.6 X","ID.6 CROZZ","ID.7 VIZZION","ID.UNYX 07"
+      ],
+      "BMW": [
+        "3 Series L","5 Series L","7 Series","i3","i4","i7","iX1","iX3","iX5",
+        "X1 L","X2","X3 L","X5 L","X7","M3","M4","M5"
+      ],
+      "Audi": [
+        "A3 Sportback","A3 Limousine","A4L","A6L","A7L","A8L","Q2L","Q3","Q3 Sportback",
+        "Q4 e-tron","Q5L","Q5L Sportback","Q5 e-tron","Q6","Q7","Q8"
+      ],
+      "Mercedes-Benz": [
+        "A-Class L","C-Class L","E-Class L","S-Class","CLA","GLA","GLB","GLC L","GLE","GLS",
+        "G-Class","EQB","EQC","EQE","EQS"
+      ],
 
-      // Остальные (то, что ты уже используешь)
-      "Volkswagen": ["Tayron","Golf","Sagitar","T-ROC","Tharu","Lamando","Tiguan L","Lavida","Magotan"],
-      "Toyota": ["Corolla","Camry","RAV4","Venza","Levin","Yaris L"],
-      "Kia": ["Sportage 3","KX1","KX3","K3"],
-      "Hyundai": ["Elantra","Sonata","IX35"],
-      "Honda": ["Fit","Vezel","XR-V","Civic"],
-      "Audi": ["A3","Q2L","Q3","Q3 Sportback"],
-      "Skoda": ["Octavia","Octavia Pro","Superb"],
-      "Jetta": ["VS5","VS7"],
-      "BMW": ["1 Series","X1"],
-      "Nissan": ["Qashqai","Kicks"],
-      "Chevrolet": ["Orlando"],
-      "Mercedes-Benz": ["A-Class"],
-      "Mazda": ["3 Axela","CX4","CX30"]
+      "Toyota": [
+        "Camry","Corolla","Levin L","RAV4","Wildlander","Highlander","Crown Kluger","Avalon",
+        "Asia Dragon","Corolla Cross","Frontlander","bZ3","bZ3X","bZ4X","Alphard","Vellfire",
+        "Sienna","Granvia","Prado"
+      ],
+      "Honda": [
+        "Accord","Inspire","Civic","Integra","CR-V","Breeze","Odyssey","Elysion","Fit","Life",
+        "HR-V","ZR-V","UR-V","Avancier","e:NP1","e:NS1","Ye P7","Ye S7"
+      ],
+      "Nissan": ["Sylphy","Altima","X-Trail","Qashqai","Ariya","Terra","Patrol","Tiida"],
+      "Lexus": ["ES","IS","LS","NX","RX","GX","LX","LM","RZ"],
+
+      "BYD": [
+        "Han","Tang","Song Plus","Song Pro","Qin Plus","Qin L","Seal","Dolphin","Seagull",
+        "Destroyer 05","Frigate 07","Yuan Plus"
+      ],
+      "Geely": ["Monjaro","Tugella","Coolray","Preface","Emgrand","Okavango","Boyue L","Xingyue L","Galaxy L7","Galaxy E8"],
+      "Zeekr": ["001","007","009","X","MIX"],
+      "Li Auto": ["L6","L7","L8","L9","MEGA"],
+      "Changan": ["UNI-V","UNI-K","UNI-T","CS75 Plus","CS55 Plus","CS35 Plus","Deepal SL03","Deepal S7","Avatr 11","Avatr 12"],
+      "Chery": ["Tiggo 9","Tiggo 8 Pro Max","Tiggo 7 Pro","Arrizo 8","Omoda C5","Jaecoo J7"],
+      "Tank": ["300","400 Hi4-T","500 Hi4-T","700 Hi4-T","800"],
+      "Xiaomi": ["SU7","MX11"],
+
+      "Tesla": ["Model 3","Model Y","Model YL","Cybertruck"],
+      "Buick": ["GL8","Regal","LaCrosse","Envision","Encore","Electra E5"],
+      "Cadillac": ["CT4","CT5","CT6","XT4","XT5","XT6","Lyriq"]
     };
 
-    // Быстрые кнопки (топ)
-    const QUICK_BRANDS = ["Geely","Chery","BYD","Haval","Changan","Li Auto","Zeekr","Volkswagen","Toyota","Kia","Hyundai","Honda"];
+    const QUICK_BRANDS = [
+      "Geely","BYD","Chery","Changan","Tank","Li Auto","Zeekr","Tesla",
+      "Volkswagen","Toyota","BMW","Audi","Mercedes-Benz","Nissan","Lexus"
+    ];
 
     const brandSelect = document.getElementById("brandSelect");
     const modelSelect = document.getElementById("modelSelect");
