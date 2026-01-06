@@ -1,96 +1,176 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Asia Car Trust</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asia Car App</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
-<body class="bg-gray-100 p-3">
-    <div class="max-w-md mx-auto">
-        <h1 class="text-2xl font-bold mb-4 text-center">Каталог авто из Китая</h1>
-        
-        <div class="grid grid-cols-2 gap-2 mb-4">
-            <select id="mark" class="p-3 rounded-xl border bg-white outline-none" onchange="updateModels()">
-                <option value="">Марка</option>
-                <option value="TOYOTA">Toyota</option>
-                <option value="GEELY">Geely</option>
-                <option value="ZEEKR">Zeekr</option>
-                <option value="LI AUTO">Li Auto</option>
-            </select>
-            <select id="model" class="p-3 rounded-xl border bg-white outline-none">
-                <option value="">Все модели</option>
-            </select>
+
+<body class="min-h-screen bg-slate-950 text-slate-100">
+  <div class="max-w-3xl mx-auto p-4">
+    <header class="mb-4">
+      <h1 class="text-2xl font-semibold">Поиск авто из Китая</h1>
+      <p class="text-slate-300 text-sm mt-1">Выбери марку и модель, затем нажми «Найти».</p>
+    </header>
+
+    <section class="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <label class="block">
+          <span class="text-sm text-slate-300">Марка</span>
+          <select id="brand" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2">
+            <option value="Toyota">Toyota</option>
+            <option value="Geely">Geely</option>
+            <option value="Zeekr">Zeekr</option>
+          </select>
+        </label>
+
+        <label class="block">
+          <span class="text-sm text-slate-300">Модель</span>
+          <select id="model" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"></select>
+        </label>
+
+        <div class="flex items-end">
+          <button id="btn"
+                  class="w-full rounded-lg bg-indigo-600 hover:bg-indigo-500 transition px-4 py-2 font-medium">
+            Найти
+          </button>
         </div>
-        <button onclick="loadCars()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg active:scale-95 transition-all">НАЙТИ МАШИНЫ</button>
+      </div>
 
-        <div id="list" class="mt-6 grid grid-cols-1 gap-4 pb-10 text-center text-gray-500">
-            Выберите марку и нажмите поиск
-        </div>
-    </div>
+      <div id="status" class="text-sm text-slate-300 mt-3"></div>
+    </section>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready();
+    <section class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3" id="results"></section>
 
-        const modelData = {
-            "TOYOTA": ["Camry", "RAV4", "Levin", "Highlander"],
-            "GEELY": ["Monjaro", "Tugella", "Coolray", "Preface"],
-            "ZEEKR": ["001", "007", "009", "X"],
-            "LI AUTO": ["L6", "L7", "L8", "L9"]
-        };
+    <section class="mt-6 text-xs text-slate-500 whitespace-pre-wrap">
+      <div id="debug"></div>
+    </section>
+  </div>
 
-        function updateModels() {
-            const mark = document.getElementById('mark').value;
-            const modelSelect = document.getElementById('model');
-            modelSelect.innerHTML = '<option value="">Все модели</option>';
-            if (modelData[mark]) {
-                modelData[mark].forEach(m => {
-                    modelSelect.innerHTML += `<option value="${m.toUpperCase()}">${m}</option>`;
-                });
-            }
+  <script>
+    // Твой публичный домен n8n (важно: без завершающего /)
+    const N8N_BASE = "https://plifartorikern.beget.app";
+    const API_URL = `${N8N_BASE}/webhook/get-cars`; // production webhook [web:14]
+
+    // Значения model должны совпадать с тем, что ожидает твой backend/n8n
+    const MODELS = {
+      Toyota: [
+        { label: "Camry", value: "Camry" },
+        { label: "RAV4",  value: "RAV4" }
+      ],
+      Geely: [
+        { label: "Monjaro", value: "Monjaro" }
+      ],
+      Zeekr: [
+        { label: "001", value: "001" }
+      ]
+    };
+
+    const brandEl = document.getElementById("brand");
+    const modelEl = document.getElementById("model");
+    const btnEl = document.getElementById("btn");
+    const statusEl = document.getElementById("status");
+    const resultsEl = document.getElementById("results");
+    const debugEl = document.getElementById("debug");
+
+    function setStatus(t) { statusEl.textContent = t || ""; }
+
+    function renderModels() {
+      const brand = brandEl.value;
+      const list = MODELS[brand] || [];
+      modelEl.innerHTML = list.map(m => `<option value="${m.value}">${m.label}</option>`).join("");
+    }
+
+    function fmt(x) {
+      if (x === null || x === undefined || x === "") return "—";
+      const n = Number(x);
+      if (!Number.isFinite(n)) return String(x);
+      return n.toLocaleString("ru-RU");
+    }
+
+    function card(c) {
+      const title = (c.name || "—").trim();
+      const year = c.year ?? "—";
+      const km = c.km ?? null;
+      const price = c.priceRub ?? null;
+      const photo = c.photo || "https://img.dongchedi.com/img/default-car.png";
+      const url = c.url || "";
+
+      return `
+        <article class="bg-slate-900/60 border border-slate-800 rounded-xl overflow-hidden">
+          <img src="${photo}" alt="" class="w-full h-44 object-cover bg-slate-950" loading="lazy">
+          <div class="p-3">
+            <div class="font-medium">${title}</div>
+            <div class="text-sm text-slate-300 mt-1">Год: ${year} • Пробег: ${fmt(km)}</div>
+            <div class="text-lg mt-2">≈ ${fmt(price)} ₽</div>
+            ${url ? `<a class="text-sm text-indigo-400 hover:text-indigo-300 mt-2 inline-block"
+                      href="${url}" target="_blank" rel="noopener">Открыть</a>` : ""}
+          </div>
+        </article>
+      `;
+    }
+
+    // Telegram Mini App: расширяем окно
+    (function initTelegram() {
+      const tg = window.Telegram?.WebApp;
+      if (!tg) return;
+      tg.expand();
+      tg.ready();
+    })();
+
+    // Максимально простой fetch (чтобы не вызывать preflight):
+    // - GET
+    // - без headers
+    // - без body
+    // - без credentials
+    async function loadCars() {
+      const mark = brandEl.value;
+      const model = modelEl.value;
+
+      resultsEl.innerHTML = "";
+      debugEl.textContent = "";
+      setStatus("Загрузка...");
+
+      const url = `${API_URL}?mark=${encodeURIComponent(mark)}&model=${encodeURIComponent(model)}`;
+
+      try {
+        const res = await fetch(url);
+
+        if (!res.ok) {
+          const text = await res.text().catch(() => "");
+          throw new Error(`HTTP ${res.status}. ${text.slice(0, 150)}`);
         }
 
-        async function loadCars() {
-            const mark = document.getElementById('mark').value;
-            const model = document.getElementById('model').value;
-            const list = document.getElementById('list');
-            list.innerHTML = 'Загрузка данных...';
+        const data = await res.json();
 
-            try {
-                // Используем твой рабочий URL
-                const apiUrl = `https://plifartorikern.beget.app/webhook/get-cars?mark=${mark}&model=${model}`;
-                const res = await fetch(apiUrl);
-                
-                if (!res.ok) throw new Error(`Ошибка: ${res.status}`);
-                const data = await res.json();
-
-                list.innerHTML = '';
-                if (!data || data.length === 0) {
-                    list.innerHTML = '❌ Ничего не найдено';
-                    return;
-                }
-
-                data.forEach(car => {
-                    list.innerHTML += `
-                        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 mb-4 text-left">
-                            <img src="${car.photo}" class="w-full h-48 object-cover">
-                            <div class="p-4">
-                                <h3 class="font-bold text-lg text-gray-900">${car.name}</h3>
-                                <p class="text-sm text-gray-500">${car.year} г. | ${car.km} км</p>
-                                <div class="mt-3 flex justify-between items-center">
-                                    <span class="text-blue-600 font-extrabold text-xl">${car.priceRub} ₽</span>
-                                    <a href="${car.url}" target="_blank" class="bg-blue-50 text-blue-700 text-xs px-4 py-2 rounded-lg font-bold">ОТКРЫТЬ</a>
-                                </div>
-                            </div>
-                        </div>`;
-                });
-            } catch (e) { 
-                list.innerHTML = `❌ Ошибка загрузки: ${e.message}`;
-            }
+        if (!data || data.ok !== true) {
+          setStatus("Backend вернул ошибку.");
+          debugEl.textContent = `URL: ${url}\nОтвет: ${JSON.stringify(data).slice(0, 600)}`;
+          return;
         }
-    </script>
+
+        const cars = Array.isArray(data.cars) ? data.cars : [];
+        setStatus(`Найдено: ${cars.length} • CNY: ${Number(data.cbrRate || 0).toFixed(4)}`);
+
+        resultsEl.innerHTML = cars.length
+          ? cars.map(card).join("")
+          : `<div class="text-slate-300">Ничего не найдено.</div>`;
+      } catch (e) {
+        setStatus("Ошибка загрузки.");
+        debugEl.textContent = `URL: ${url}\nОшибка: ${e.message}`;
+      }
+    }
+
+    brandEl.addEventListener("change", renderModels);
+    btnEl.addEventListener("click", loadCars);
+
+    renderModels();
+  </script>
 </body>
 </html>
