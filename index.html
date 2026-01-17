@@ -63,10 +63,11 @@
       </div>
 
       <div class="grid grid-cols-2 gap-3 mb-6">
+        <!-- ИСПРАВЛЕНО: убрали хардкод 2022-2024 -->
         <select id="year" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
           <option value="">Год от</option>
-          <option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option>
         </select>
+
         <select id="power" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold border-blue-200 border outline-none appearance-none">
           <option value="any">Мощность</option>
           <option value="low">До 160 л.с.</option>
@@ -156,6 +157,17 @@
       m.innerHTML = '<option value="">Любая модель</option>';
       if (modelsData[b]) {
         modelsData[b].forEach(item => m.innerHTML += `<option value="${item.toUpperCase()}">${item}</option>`);
+      }
+    }
+
+    // ИСПРАВЛЕНО: годы формируем динамически (2026..1990 по умолчанию)
+    function fillYears(minYear = 1990) {
+      const yearSelect = document.getElementById('year');
+      const currentYear = new Date().getFullYear();
+
+      yearSelect.innerHTML = '<option value="">Год от</option>';
+      for (let y = currentYear; y >= minYear; y--) {
+        yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
       }
     }
 
@@ -252,7 +264,7 @@
       });
     }
 
-    // ДОБАВЛЕНО: рендер опций/комплектации (ничего больше не трогаем)
+    // Рендер опций/комплектации
     function renderOptions(c) {
       const opt = c?.options ?? c?.specs ?? null;
       if (!opt) return `<div class="text-[12px] text-slate-400 font-bold">Нет данных по комплектации</div>`;
@@ -360,7 +372,6 @@
                 <div class="text-3xl font-black text-blue-600 tracking-tighter">${safeText(turnkey)} ₽</div>
               </div>
 
-              <!-- ДОБАВЛЕНО: Опции / комплектация -->
               <div class="mt-5">
                 <details class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
                   <summary class="cursor-pointer select-none font-black text-[10px] uppercase tracking-[0.2em] text-slate-700">
@@ -388,6 +399,8 @@
     }
 
     updateModels();
+    fillYears(1990);
+
     if (window.Telegram?.WebApp) {
       Telegram.WebApp.ready();
       Telegram.WebApp.expand();
