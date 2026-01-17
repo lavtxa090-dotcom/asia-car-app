@@ -18,46 +18,10 @@
       <div class="grid grid-cols-2 gap-3 mb-4">
         <select id="brand" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none" onchange="updateModels()">
           <option value="">Все марки</option>
-
-          <!-- China -->
-          <option value="BYD">BYD</option>
-          <option value="CHERY">Chery</option>
-          <option value="CHANGAN">Changan</option>
-          <option value="EXEED">Exeed</option>
-          <option value="GAC">GAC</option>
-          <option value="GEELY">Geely</option>
-          <option value="HAVAL">Haval</option>
-          <option value="HONGQI">Hongqi</option>
-          <option value="JAECOO">Jaecoo</option>
-          <option value="JETOUR">Jetour</option>
-          <option value="LEAPMOTOR">Leapmotor</option>
-          <option value="LI AUTO">Li Auto</option>
-          <option value="LYNK & CO">Lynk &amp; Co</option>
-          <option value="NIO">Nio</option>
-          <option value="OMODA">Omoda</option>
-          <option value="TANK">Tank</option>
-          <option value="WEY">Wey</option>
-          <option value="XPENG">Xpeng</option>
-          <option value="XIAOMI">Xiaomi</option>
-          <option value="ZEEKR">Zeekr</option>
-
-          <!-- Germany / Japan / US -->
-          <option value="AUDI">Audi</option>
-          <option value="BMW">BMW</option>
-          <option value="MERCEDES-BENZ">Mercedes-Benz</option>
-          <option value="VOLKSWAGEN">Volkswagen</option>
-          <option value="HONDA">Honda</option>
-          <option value="NISSAN">Nissan</option>
-          <option value="TOYOTA">Toyota</option>
-          <option value="LEXUS">Lexus</option>
-          <option value="TESLA">Tesla</option>
-          <option value="BUICK">Buick</option>
-          <option value="CADILLAC">Cadillac</option>
-
-          <!-- (оставил твой SUBARU, но его не было в workflow brands; можешь убрать) -->
-          <option value="SUBARU">Subaru</option>
+          <option value="GEELY">Geely</option><option value="BYD">BYD</option><option value="ZEEKR">Zeekr</option>
+          <option value="LI AUTO">Li Auto</option><option value="TOYOTA">Toyota</option><option value="SUBARU">Subaru</option>
+          <option value="TANK">Tank</option><option value="BMW">BMW</option><option value="VOLKSWAGEN">VW</option>
         </select>
-
         <select id="model" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
           <option value="">Любая модель</option>
         </select>
@@ -93,72 +57,19 @@
   </div>
 
   <script>
-    // Справочник фильтров (расширен под workflow)
     const modelsData = {
-      // Geely
-      "GEELY": ["Monjaro", "Tugella", "Coolray", "Preface", "Okavango", "Emgrand", "Boyue L", "Xingyue L", "Galaxy L7", "Galaxy E8"],
-
-      // BYD
-      "BYD": ["Han", "Tang", "Seal", "Dolphin", "Seagull", "Qin Plus", "Qin L", "Song Plus", "Song Pro", "Destroyer 05", "Frigate 07", "Yuan Plus"],
-
-      // Zeekr
-      "ZEEKR": ["001", "007", "009", "X"],
-
-      // Li Auto
-      "LI AUTO": ["L6", "L7", "L8", "L9", "MEGA"],
-
-      // Chery / Exeed / Omoda / Jaecoo / Jetour
-      "CHERY": ["Arrizo 8", "Tiggo 7 Pro", "Tiggo 8 Pro Max", "Tiggo 9"],
-      "EXEED": ["RX", "TXL", "VX"],
-      "OMODA": ["Omoda C5"],
-      "JAECOO": ["Jaecoo J7"],
-      "JETOUR": ["X70", "X90"],
-
-      // Great Wall group
-      "TANK": ["300", "400 Hi4-T", "500 Hi4-T", "700 Hi4-T"],
-      "HAVAL": ["H6", "Dargo", "Jolion"],
-      "WEY": ["Coffee 01", "Coffee 02"],
-
-      // Changan / Deepal / Avatr (если в твоём источнике так приходит)
-      "CHANGAN": ["CS35 Plus", "CS55 Plus", "CS75 Plus", "UNI-K", "UNI-T", "UNI-V"],
-      "GAC": ["GS8", "Aion Y"],
-      "HONGQI": ["H5", "H9"],
-      "LEAPMOTOR": ["C10", "C11"],
-      "NIO": ["ES6", "ET5"],
-      "XPENG": ["G6", "P7"],
-      "XIAOMI": ["SU7", "MX11"],
-      "LYNK & CO": ["01", "03"],
-
-      // Toyota
-      "TOYOTA": ["Camry", "RAV4", "Highlander", "Frontlander", "Crown Kluger", "Sienna", "Alphard", "Corolla", "Corolla Cross", "Avalon", "Prado"],
-
-      // Nissan / Honda / Lexus
-      "NISSAN": ["Sylphy", "Altima", "Ariya", "Qashqai", "X-Trail"],
-      "HONDA": ["Civic", "Accord", "CR-V", "HR-V", "ZR-V", "Odyssey", "Elysion"],
-      "LEXUS": ["ES", "NX", "RX", "GX", "LX", "LM", "IS", "LS", "RZ"],
-
-      // VW / Audi / BMW / Mercedes
-      "VOLKSWAGEN": ["Passat Pro", "Magotan", "Sagitar", "Tayron L", "Tayron X", "Teramont", "Teramont X", "Tavendor", "Talagon", "ID.3", "ID.4 X", "ID.6 X", "Touareg", "CC"],
-      "AUDI": ["A3 Sportback", "A3 Limousine", "A4L", "A6L", "A7L", "A8L", "Q2L", "Q3", "Q3 Sportback", "Q5L", "Q5L Sportback", "Q7", "Q8"],
-      "BMW": ["i3", "i4", "i7", "iX1", "iX3", "3 Series L", "5 Series L", "X1 L", "X3 L", "X5 L", "7 Series", "M3", "M4", "M5"],
-      "MERCEDES-BENZ": ["A-Class L", "C-Class L", "E-Class L", "S-Class", "GLA", "GLB", "GLC L", "GLE", "GLS", "G-Class", "EQB", "EQC", "EQE", "EQS"],
-
-      // Tesla / Buick / Cadillac
-      "TESLA": ["Model 3", "Model Y", "Model YL", "Cybertruck"],
-      "BUICK": ["GL8", "Regal", "Envision", "Encore", "LaCrosse"],
-      "CADILLAC": ["CT4", "CT5", "CT6", "Lyriq"],
-
-      // Subaru (оставлено как было)
-      "SUBARU": ["Forester", "Outback", "XV"]
+      "GEELY": ["Monjaro", "Tugella", "Coolray", "Preface"],
+      "TOYOTA": ["Camry", "RAV4", "Highlander"],
+      "SUBARU": ["Forester", "Outback", "XV"],
+      "BYD": ["Han", "Tang", "Seal"],
+      "ZEEKR": ["001", "007", "X"]
     };
 
     function updateModels() {
       const b = document.getElementById('brand').value;
       const m = document.getElementById('model');
       m.innerHTML = '<option value="">Любая модель</option>';
-      if (modelsData[b]) {
-        modelsData[b].forEach(item => m.innerHTML += `<option value="${item.toUpperCase()}">${item}</option>`);
-      }
+      if (modelsData[b]) modelsData[b].forEach(item => m.innerHTML += `<option value="${item.toUpperCase()}">${item}</option>`);
     }
 
     const pMin = document.getElementById("priceMin");
@@ -169,7 +80,8 @@
 
     function safeText(v, fallback = '') {
       if (v === null || v === undefined) return fallback;
-      return String(v);
+      const s = String(v);
+      return s;
     }
 
     function safePhotosFromCar(c) {
@@ -181,30 +93,6 @@
 
     function escapeForDataAttr(jsonString) {
       return jsonString.replace(/</g, '\\u003c').replace(/&/g, '\\u0026');
-    }
-
-    // Универсально достаём "цену под ключ" из разных версий ответа бэка
-    function getTurnkeyPrice(c) {
-      // 1) старое поле (ожидает UI)
-      if (c && c.priceRub !== undefined && c.priceRub !== null && c.priceRub !== '') return c.priceRub;
-
-      // 2) новое строковое поле
-      if (c && c.priceTotalRub !== undefined && c.priceTotalRub !== null && c.priceTotalRub !== '') return c.priceTotalRub;
-
-      // 3) если бэк отдаёт breakdown числом
-      const n = c?.priceBreakdown?.total ?? c?.priceBreakdown?.Total ?? null;
-      if (typeof n === 'number' && Number.isFinite(n)) return n.toLocaleString('ru-RU');
-
-      return '';
-    }
-
-    // Корректный вывод мощности: если уже строка с "л.с." — не добавляем ещё раз
-    function normalizePowerLabel(c) {
-      const v = c?.power ?? c?.horsePower ?? c?.horse_power ?? c?.hp ?? null;
-      if (v === null || v === undefined || v === '') return '';
-      const s = String(v).trim();
-      if (/[а-я]/i.test(s) || s.includes('л.с') || s.includes('лс')) return s; // уже человекочитаемо
-      return s; // число строкой
     }
 
     function attachGalleryHandlers() {
@@ -227,10 +115,7 @@
       document.querySelectorAll('.js-main-photo').forEach(img => {
         let x0 = null;
 
-        const lock = (e) => {
-          x0 = (e.touches ? e.touches[0].clientX : e.clientX);
-        };
-
+        const lock = (e) => { x0 = (e.touches ? e.touches[0].clientX : e.clientX); };
         const move = (e) => {
           if (x0 === null) return;
           const x1 = (e.changedTouches ? e.changedTouches[0].clientX : e.clientX);
@@ -259,6 +144,67 @@
       });
     }
 
+    function normalizePowerLabel(c) {
+      const v = c?.power ?? c?.horsePower ?? c?.horse_power ?? c?.hp ?? null;
+      if (v === null || v === undefined || v === '') return '';
+      const s = String(v).trim();
+      if (s.includes('л.с') || s.includes('лс')) return s;
+      return s + ' л.с.';
+    }
+
+    // Рендер "интересных" опций (ожидает, что бэк отдаст c.options)
+    // c.options может быть:
+    // - объектом { key: value, ... }
+    // - массивом [{label, value}, ...]
+    function renderOptions(c) {
+      const opt = c?.options ?? c?.specs ?? null;
+      if (!opt) {
+        return `<div class="text-[12px] text-slate-400 font-bold">Нет данных по комплектации</div>`;
+      }
+
+      // массив вида [{label,value}]
+      if (Array.isArray(opt)) {
+        const items = opt
+          .filter(x => x && (x.label || x.key) && (x.value !== undefined))
+          .slice(0, 14);
+
+        if (!items.length) return `<div class="text-[12px] text-slate-400 font-bold">Нет данных по комплектации</div>`;
+
+        return `
+          <div class="grid grid-cols-1 gap-2">
+            ${items.map(it => `
+              <div class="flex justify-between gap-3 text-[12px] font-bold uppercase">
+                <span class="text-slate-400">${safeText(it.label || it.key)}</span>
+                <span class="text-slate-900 text-right">${safeText(it.value)}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      // объект {k:v}
+      if (typeof opt === 'object') {
+        const entries = Object.entries(opt)
+          .filter(([k, v]) => v !== null && v !== undefined && v !== '' && v !== 'empty' && v !== 'пусто' && v !== 'пустой')
+          .slice(0, 14);
+
+        if (!entries.length) return `<div class="text-[12px] text-slate-400 font-bold">Нет данных по комплектации</div>`;
+
+        return `
+          <div class="grid grid-cols-1 gap-2">
+            ${entries.map(([k, v]) => `
+              <div class="flex justify-between gap-3 text-[12px] font-bold uppercase">
+                <span class="text-slate-400">${safeText(k).replace(/_/g,' ')}</span>
+                <span class="text-slate-900 text-right">${safeText(v)}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      return `<div class="text-[12px] text-slate-400 font-bold">Нет данных по комплектации</div>`;
+    }
+
     async function search() {
       const list = document.getElementById('list');
       list.innerHTML = '<div class="text-center py-20 animate-pulse text-slate-300 font-black uppercase text-[10px] tracking-widest">Анализ рынка КНР...</div>';
@@ -279,8 +225,6 @@
         list.innerHTML = (data.cars || []).map(c => {
           const photos = safePhotosFromCar(c);
           const photosJson = escapeForDataAttr(JSON.stringify(photos));
-
-          const turnkey = getTurnkeyPrice(c);
           const powerLabel = normalizePowerLabel(c);
 
           return `
@@ -318,7 +262,19 @@
 
               <div class="pt-5 border-t border-slate-100">
                 <div class="text-[10px] font-black text-slate-400 uppercase mb-1">Цена под ключ до РФ:</div>
-                <div class="text-3xl font-black text-blue-600 tracking-tighter">${safeText(turnkey)} ₽</div>
+                <div class="text-3xl font-black text-blue-600 tracking-tighter">${safeText(c.priceRub)} ₽</div>
+              </div>
+
+              <!-- Опции / комплектация -->
+              <div class="mt-5">
+                <details class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                  <summary class="cursor-pointer select-none font-black text-[10px] uppercase tracking-[0.2em] text-slate-700">
+                    Опции / комплектация
+                  </summary>
+                  <div class="mt-4">
+                    ${renderOptions(c)}
+                  </div>
+                </details>
               </div>
 
               <a href="${safeText(c.url, '#')}" target="_blank"
