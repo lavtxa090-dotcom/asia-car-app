@@ -5,21 +5,22 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
   <title>AsiaCar Premium 2026</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans">
   <div class="max-w-md mx-auto p-4">
     <header class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-black text-blue-600 italic uppercase">AsiaCar</h1>
-        <div class="text-[10px] font-bold bg-white border border-slate-200 px-3 py-1 rounded-full shadow-sm text-slate-400 uppercase tracking-widest">Global Export</div>
+        <div class="text-[10px] font-bold bg-white border border-slate-200 px-3 py-1 rounded-full shadow-sm">EXPORT PRO</div>
     </header>
 
-    <div class="bg-white rounded-[2.5rem] p-6 shadow-xl shadow-blue-900/5 border border-slate-100 mb-8">
+    <div class="bg-white rounded-[2.5rem] p-6 shadow-xl border border-slate-100 mb-8">
       <div class="grid grid-cols-2 gap-3 mb-4">
         <select id="brand" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none" onchange="updateModels()">
           <option value="">Марка</option>
-          <option value="GEELY">Geely</option><option value="BYD">BYD</option><option value="ZEEKR">Zeekr</option>
-          <option value="LI AUTO">Li Auto</option><option value="TOYOTA">Toyota</option><option value="TANK">Tank</option>
-          <option value="BMW">BMW</option><option value="VOLKSWAGEN">VW</option><option value="SUBARU">Subaru</option>
+          <option value="GEELY">Geely</option><option value="SUBARU">Subaru</option><option value="TOYOTA">Toyota</option>
+          <option value="ZEEKR">Zeekr</option><option value="LI AUTO">Li Auto</option><option value="TANK">Tank</option>
+          <option value="BMW">BMW</option><option value="VOLKSWAGEN">VW</option>
         </select>
         <select id="model" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
           <option value="">Любая модель</option>
@@ -31,7 +32,7 @@
           <option value="">Год от</option>
           <option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option>
         </select>
-        <select id="power" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold outline-none appearance-none border-blue-200 border">
+        <select id="power" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold border-blue-200 border outline-none appearance-none">
           <option value="any">Мощность</option>
           <option value="low">До 160 л.с.</option>
           <option value="high">160+ л.с.</option>
@@ -40,13 +41,13 @@
 
       <div class="mb-8 px-1">
         <div class="flex justify-between text-[11px] font-black uppercase text-slate-400 mb-2">
-            <span>Бюджет под ключ</span>
-            <span id="priceVal" class="text-blue-600 font-black tracking-tighter">до 10.0 млн ₽</span>
+            <span>Бюджет до</span>
+            <span id="priceVal" class="text-blue-600 font-black">10.0 млн ₽</span>
         </div>
         <input type="range" id="priceRange" min="1500000" max="15000000" step="500000" value="10000000" class="w-full h-1.5 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
       </div>
 
-      <button onclick="search()" class="w-full bg-blue-600 text-white font-black py-5 rounded-[1.5rem] shadow-lg shadow-blue-200 active:scale-95 transition-all uppercase text-[10px] tracking-[0.2em]">
+      <button onclick="search()" class="w-full bg-blue-600 text-white font-black py-5 rounded-[1.5rem] shadow-lg active:scale-95 transition-all uppercase text-[10px] tracking-[0.2em]">
         Найти варианты
       </button>
     </div>
@@ -56,8 +57,8 @@
 
   <script>
     const modelsData = {
-      "GEELY": ["Monjaro", "Tugella", "Coolray"], "BYD": ["Han", "Tang", "Seal"], "ZEEKR": ["001", "007", "X"],
-      "TOYOTA": ["Camry", "RAV4", "Prado"], "SUBARU": ["Forester", "Outback"], "TANK": ["300", "500"]
+      "GEELY": ["Monjaro", "Tugella", "Coolray"], "SUBARU": ["Forester", "Outback", "XV"],
+      "TOYOTA": ["Camry", "RAV4", "Prado"], "ZEEKR": ["001", "007", "X"], "TANK": ["300", "500"]
     };
 
     function updateModels() {
@@ -67,11 +68,11 @@
     }
 
     const priceRange = document.getElementById("priceRange");
-    priceRange.oninput = () => document.getElementById("priceVal").innerText = `до ${(priceRange.value / 1000000).toFixed(1)} млн ₽`;
+    priceRange.oninput = () => document.getElementById("priceVal").innerText = `${(priceRange.value / 1000000).toFixed(1)} млн ₽`;
 
     async function search() {
       const list = document.getElementById('list');
-      list.innerHTML = '<div class="text-center py-20 animate-pulse text-slate-300 font-black uppercase text-[10px] tracking-widest">Загрузка данных из КНР...</div>';
+      list.innerHTML = '<div class="text-center py-20 animate-pulse text-slate-300 font-black uppercase text-[10px] tracking-widest">Поиск в КНР...</div>';
       
       const query = new URLSearchParams({
         mark: document.getElementById('brand').value, model: document.getElementById('model').value,
@@ -82,38 +83,36 @@
       try {
         const res = await fetch(`https://plifartorikern.beget.app/webhook/get-cars?${query}`);
         const data = await res.json();
-        const cars = data.cars || [];
-
-        list.innerHTML = cars.map(c => `
+        
+        list.innerHTML = (data.cars || []).map(c => `
           <div class="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100">
             <div class="relative">
                 <img src="${c.photo}" class="w-full h-64 object-cover">
                 <div class="absolute bottom-3 right-3 flex gap-1.5 bg-black/20 p-1.5 rounded-2xl backdrop-blur-sm">
-                    ${(c.photos || []).slice(1, 5).map(p => `<img src="${p}" class="w-12 h-12 rounded-xl border-2 border-white object-cover shadow-lg">`).join("")}
+                    ${(c.photos || []).slice(1, 5).map(p => `<img src="${p}" class="w-12 h-12 rounded-xl border-2 border-white object-cover">`).join("")}
                 </div>
             </div>
             <div class="p-6">
               <h3 class="font-black uppercase text-xl mb-4 leading-tight tracking-tighter">${c.name}</h3>
-              
-              <div class="space-y-2.5 mb-6 text-[13px] font-bold text-slate-500 uppercase tracking-tight">
-                <div class="flex items-center gap-2">📍 Пробег: <span class="text-slate-900">${c.km}</span></div>
-                <div class="flex items-center gap-2">📅 Год: <span class="text-slate-900">${c.year} г.</span></div>
-                <div class="flex items-center gap-2">✅ ДВС: <span class="text-slate-900">${c.volume}</span></div>
-                <div class="flex items-center gap-2">⚙️ Мощность: <span class="text-slate-900">${c.power} л.с.</span></div>
-                <div class="flex items-center gap-2">➕ Привод: <span class="text-slate-900">${c.drive}</span></div>
+              <div class="space-y-2 text-[13px] font-bold text-slate-500 uppercase tracking-tight mb-6">
+                <div>📍 Пробег: <span class="text-slate-900">${c.km}</span></div>
+                <div>📅 Год: <span class="text-slate-900">${c.year} г.</span></div>
+                <div>✅ ДВС: <span class="text-slate-900">${c.volume}</span></div>
+                <div>⚙️ Мощность: <span class="text-slate-900">${c.power} л.с.</span></div>
+                <div>➕ Привод: <span class="text-slate-900">${c.drive}</span></div>
               </div>
-
-              <div class="pt-5 border-t border-slate-100">
+              <div class="pt-5 border-t">
                 <div class="text-[10px] font-black text-slate-400 uppercase mb-1">Цена под ключ до РФ:</div>
-                <div class="text-3xl font-black text-blue-600 tracking-tighter">${c.priceRub} ₽</div>
+                <div class="text-3xl font-black text-blue-600">${c.priceRub} ₽</div>
               </div>
-              <a href="${c.url}" target="_blank" class="block w-full bg-slate-900 text-white text-center py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] mt-5">Посмотреть детали</a>
+              <a href="${c.url}" target="_blank" class="block w-full bg-slate-900 text-white text-center py-4 rounded-2xl font-black text-[10px] uppercase mt-5 tracking-widest">Оригинал</a>
             </div>
           </div>
         `).join("") || '<div class="text-center py-20 font-bold text-slate-400">Ничего не найдено</div>';
       } catch (e) { list.innerHTML = 'Ошибка соединения'; }
     }
     updateModels();
+    if (window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); }
   </script>
 </body>
 </html>
