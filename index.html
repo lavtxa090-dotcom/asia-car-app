@@ -10,16 +10,17 @@
 <body class="bg-slate-50 text-slate-900 font-sans">
   <div class="max-w-md mx-auto p-4">
     <header class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-black text-blue-600 italic uppercase">AsiaCar</h1>
-        <div class="text-[10px] font-bold bg-white border border-slate-200 px-3 py-1 rounded-full shadow-sm">2026 SYSTEM</div>
+        <h1 class="text-2xl font-black text-blue-600 italic uppercase tracking-tighter">AsiaCar</h1>
+        <div class="text-[10px] font-bold bg-white border border-slate-200 px-3 py-1 rounded-full shadow-sm text-slate-400">PRO SYSTEM</div>
     </header>
 
     <div class="bg-white rounded-[2.5rem] p-6 shadow-xl border border-slate-100 mb-8">
       <div class="grid grid-cols-2 gap-3 mb-4">
         <select id="brand" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none" onchange="updateModels()">
-          <option value="">Марка</option>
-          <option value="GEELY">Geely</option><option value="SUBARU">Subaru</option><option value="TOYOTA">Toyota</option>
-          <option value="BYD">BYD</option><option value="ZEEKR">Zeekr</option><option value="TANK">Tank</option>
+          <option value="">Все марки</option>
+          <option value="GEELY">Geely</option><option value="BYD">BYD</option><option value="ZEEKR">Zeekr</option>
+          <option value="LI AUTO">Li Auto</option><option value="TOYOTA">Toyota</option><option value="SUBARU">Subaru</option>
+          <option value="TANK">Tank</option><option value="BMW">BMW</option><option value="VOLKSWAGEN">VW</option>
         </select>
         <select id="model" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
           <option value="">Любая модель</option>
@@ -38,8 +39,17 @@
         </select>
       </div>
 
+      <div class="space-y-4 mb-8">
+        <div class="flex justify-between text-[11px] font-black uppercase text-slate-400">
+            <span>От: <span id="minVal" class="text-blue-600 tracking-tighter">1.0 млн</span></span>
+            <span>До: <span id="maxVal" class="text-blue-600 tracking-tighter">10.0 млн</span></span>
+        </div>
+        <input type="range" id="priceMin" min="1000000" max="15000000" step="500000" value="1000000" class="w-full h-1 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
+        <input type="range" id="priceMax" min="1000000" max="15000000" step="500000" value="10000000" class="w-full h-1 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
+      </div>
+
       <button onclick="search()" class="w-full bg-blue-600 text-white font-black py-5 rounded-[1.5rem] shadow-lg active:scale-95 transition-all uppercase text-[10px] tracking-[0.2em]">
-        Найти варианты
+        Найти предложения
       </button>
     </div>
 
@@ -48,8 +58,8 @@
 
   <script>
     const modelsData = {
-      "GEELY": ["Monjaro", "Tugella", "Coolray"], "SUBARU": ["Forester", "Outback"],
-      "TOYOTA": ["Camry", "RAV4"], "BYD": ["Han", "Tang", "Seal"], "TANK": ["300", "500"]
+      "GEELY": ["Monjaro", "Tugella", "Coolray", "Preface"], "TOYOTA": ["Camry", "RAV4", "Highlander"],
+      "SUBARU": ["Forester", "Outback", "XV"], "BYD": ["Han", "Tang", "Seal"], "ZEEKR": ["001", "007", "X"]
     };
 
     function updateModels() {
@@ -58,13 +68,18 @@
       if(modelsData[b]) modelsData[b].forEach(item => m.innerHTML += `<option value="${item.toUpperCase()}">${item}</option>`);
     }
 
+    const pMin = document.getElementById("priceMin"); const pMax = document.getElementById("priceMax");
+    pMin.oninput = () => document.getElementById("minVal").innerText = (pMin.value/1000000).toFixed(1) + ' млн';
+    pMax.oninput = () => document.getElementById("maxVal").innerText = (pMax.value/1000000).toFixed(1) + ' млн';
+
     async function search() {
       const list = document.getElementById('list');
-      list.innerHTML = '<div class="text-center py-20 animate-pulse text-slate-300 font-black uppercase text-[10px] tracking-widest">Анализ данных КНР...</div>';
+      list.innerHTML = '<div class="text-center py-20 animate-pulse text-slate-300 font-black uppercase text-[10px] tracking-widest">Анализ рынка КНР...</div>';
       
       const query = new URLSearchParams({
         mark: document.getElementById('brand').value, model: document.getElementById('model').value,
-        year: document.getElementById('year').value, power: document.getElementById('power').value
+        year: document.getElementById('year').value, power: document.getElementById('power').value,
+        price_min: pMin.value, price_max: pMax.value
       });
 
       try {
@@ -76,23 +91,23 @@
             <div class="relative">
                 <img src="${c.photo}" class="w-full h-64 object-cover">
                 <div class="absolute bottom-3 right-3 flex gap-1.5 bg-black/20 p-1.5 rounded-2xl backdrop-blur-sm">
-                    ${(c.photos || []).slice(1, 5).map(p => `<img src="${p}" class="w-12 h-12 rounded-xl border-2 border-white object-cover">`).join("")}
+                    ${(c.photos || []).slice(1, 5).map(p => `<img src="${p}" class="w-12 h-12 rounded-xl border-2 border-white object-cover shadow-lg">`).join("")}
                 </div>
             </div>
             <div class="p-6">
-              <h3 class="font-black uppercase text-xl mb-4 leading-tight tracking-tighter">${c.name}</h3>
+              <h3 class="font-black uppercase text-xl mb-4 leading-tight tracking-tighter text-slate-800">${c.name}</h3>
               <div class="space-y-2 text-[13px] font-bold text-slate-500 uppercase tracking-tight mb-6">
-                <div>📍 ПРОБЕГ: <span class="text-slate-900">${c.km || '—'}</span></div>
-                <div>📅 ГОД: <span class="text-slate-900">${c.year || '—'} г.</span></div>
-                <div>✅ ДВС: <span class="text-slate-900">${c.volume || '2.0 л.'}</span></div>
-                <div>⚙️ МОЩНОСТЬ: <span class="text-slate-900">${c.power || '150'} Л.С.</span></div>
-                <div>➕ ПРИВОД: <span class="text-slate-900">${c.drive || 'ПОЛНЫЙ'}</span></div>
+                <div>📍 ПРОБЕГ: <span class="text-slate-900">${c.km}</span></div>
+                <div>📅 ГОД: <span class="text-slate-900">${c.year} г.</span></div>
+                <div>✅ ДВС: <span class="text-slate-900">${c.volume}</span></div>
+                <div>⚙️ МОЩНОСТЬ: <span class="text-slate-900">${c.power} Л.С.</span></div>
+                <div>➕ ПРИВОД: <span class="text-slate-900">${c.drive}</span></div>
               </div>
-              <div class="pt-5 border-t">
+              <div class="pt-5 border-t border-slate-100">
                 <div class="text-[10px] font-black text-slate-400 uppercase mb-1">Цена под ключ до РФ:</div>
-                <div class="text-3xl font-black text-blue-600">${c.priceRub} ₽</div>
+                <div class="text-3xl font-black text-blue-600 tracking-tighter">${c.priceRub} ₽</div>
               </div>
-              <a href="${c.url}" target="_blank" class="block w-full bg-slate-900 text-white text-center py-4 rounded-2xl font-black text-[10px] uppercase mt-5 tracking-widest tracking-tighter">Посмотреть оригинал</a>
+              <a href="${c.url}" target="_blank" class="block w-full bg-slate-900 text-white text-center py-4 rounded-2xl font-black text-[10px] uppercase mt-5 tracking-[0.2em]">Посмотреть оригинал</a>
             </div>
           </div>
         `).join("") || '<div class="text-center py-20 font-bold text-slate-400">Ничего не найдено</div>';
