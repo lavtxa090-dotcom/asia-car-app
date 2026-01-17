@@ -2,226 +2,123 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Asia Car App</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+  <title>China Auto Export</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script>
-    if (window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); }
-  </script>
 </head>
 
-<body class="min-h-screen bg-slate-950 text-slate-100">
-  <div class="max-w-5xl mx-auto p-4">
-    <header class="mb-4">
-      <div class="text-2xl font-semibold">Поиск авто</div>
-      <div class="text-slate-300 text-sm mt-1">Только выбор из списка (без ручного ввода).</div>
+<body class="bg-slate-50 text-slate-900 font-sans">
+  <div class="max-w-md mx-auto p-4">
+    <header class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-black text-blue-600 italic uppercase">AutoTrust</h1>
+        <div class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-1 rounded">2026 UPDATE</div>
     </header>
 
-    <section class="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
-      <div class="text-sm text-slate-300 mb-2">Быстрые бренды</div>
-      <div id="quickBrands" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2"></div>
-
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mt-4">
-        <label class="block">
-          <span class="text-sm text-slate-300">Марка</span>
-          <select id="brandSelect" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"></select>
-        </label>
-
-        <label class="block">
-          <span class="text-sm text-slate-300">Модель</span>
-          <select id="modelSelect" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"></select>
-        </label>
-
-        <label class="block">
-          <span class="text-sm text-slate-300">Год от (опц.)</span>
-          <select id="yearSelect" class="mt-1 w-full rounded-lg bg-slate-950 border border-slate-800 p-2"></select>
-        </label>
-
-        <div class="flex items-end">
-          <button id="searchBtn" class="w-full rounded-lg bg-indigo-600 hover:bg-indigo-500 transition px-4 py-2 font-medium">
-            Найти
-          </button>
-        </div>
+    <div class="bg-white rounded-[32px] p-5 shadow-sm border border-slate-200 mb-6">
+      <div class="grid grid-cols-2 gap-2 mb-3">
+        <select id="brandSelect" class="w-full bg-slate-100 border-none rounded-2xl p-3 text-sm font-bold outline-none" onchange="fillModels()"></select>
+        <select id="modelSelect" class="w-full bg-slate-100 border-none rounded-2xl p-3 text-sm font-bold outline-none"></select>
       </div>
 
-      <div id="status" class="text-sm text-slate-300 mt-3"></div>
-    </section>
+      <div class="grid grid-cols-2 gap-2 mb-4">
+        <select id="yearSelect" class="w-full bg-slate-100 border-none rounded-2xl p-3 text-sm font-bold outline-none"></select>
+        <select id="powerSelect" class="w-full bg-slate-100 border-none rounded-2xl p-3 text-sm font-bold outline-none">
+            <option value="any">Мощность</option>
+            <option value="low">До 160 л.с.</option>
+            <option value="high">160+ л.с.</option>
+        </select>
+      </div>
 
-    <section class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3" id="results"></section>
+      <div class="mb-4">
+        <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Макс. бюджет под ключ (₽)</label>
+        <input type="range" id="priceRange" min="1500000" max="15000000" step="500000" value="5000000" class="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
+        <div id="priceVal" class="text-right text-blue-600 font-black text-sm mt-1">до 5.0 млн</div>
+      </div>
 
-    <section class="mt-6 text-xs text-slate-500 whitespace-pre-wrap">
-      <div id="debug"></div>
-    </section>
+      <button id="searchBtn" class="w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-blue-100 active:scale-95 transition-all uppercase tracking-widest text-xs">
+        Найти варианты
+      </button>
+    </div>
+
+    <div id="results" class="space-y-4 pb-10"></div>
   </div>
 
   <script>
     const API_URL = "https://plifartorikern.beget.app/webhook/get-cars";
-
-    // Список брендов/моделей — только списки, без ручного ввода
     const SUGGEST = {
-      "Volkswagen": [
-        "T-Roc","Tharu","Tharu XR","Tiguan L Pro","Tiguan X","Teramont","Teramont X","Touareg",
-        "Tayron L","Tayron X","Talagon","Tavendor","Magotan","Passat Pro","Sagitar","Lavida XR",
-        "Lamando L","Bora","Santana","CC","Polo Plus","Viloran","ID.3","ID.4 X","ID.4 CROZZ",
-        "ID.6 X","ID.6 CROZZ","ID.7 VIZZION","ID.UNYX 07"
-      ],
-      "BMW": [
-        "3 Series L","5 Series L","7 Series","i3","i4","i7","iX1","iX3","iX5",
-        "X1 L","X2","X3 L","X5 L","X7","M3","M4","M5"
-      ],
-      "Audi": [
-        "A3 Sportback","A3 Limousine","A4L","A6L","A7L","A8L","Q2L","Q3","Q3 Sportback",
-        "Q4 e-tron","Q5L","Q5L Sportback","Q5 e-tron","Q6","Q7","Q8"
-      ],
-      "Mercedes-Benz": [
-        "A-Class L","C-Class L","E-Class L","S-Class","CLA","GLA","GLB","GLC L","GLE","GLS",
-        "G-Class","EQB","EQC","EQE","EQS"
-      ],
-
-      "Toyota": [
-        "Camry","Corolla","Levin L","RAV4","Wildlander","Highlander","Crown Kluger","Avalon",
-        "Asia Dragon","Corolla Cross","Frontlander","bZ3","bZ3X","bZ4X","Alphard","Vellfire",
-        "Sienna","Granvia","Prado"
-      ],
-      "Honda": [
-        "Accord","Inspire","Civic","Integra","CR-V","Breeze","Odyssey","Elysion","Fit","Life",
-        "HR-V","ZR-V","UR-V","Avancier","e:NP1","e:NS1","Ye P7","Ye S7"
-      ],
-      "Nissan": ["Sylphy","Altima","X-Trail","Qashqai","Ariya","Terra","Patrol","Tiida"],
-      "Lexus": ["ES","IS","LS","NX","RX","GX","LX","LM","RZ"],
-
-      "BYD": [
-        "Han","Tang","Song Plus","Song Pro","Qin Plus","Qin L","Seal","Dolphin","Seagull",
-        "Destroyer 05","Frigate 07","Yuan Plus"
-      ],
-      "Geely": ["Monjaro","Tugella","Coolray","Preface","Emgrand","Okavango","Boyue L","Xingyue L","Galaxy L7","Galaxy E8"],
-      "Zeekr": ["001","007","009","X","MIX"],
-      "Li Auto": ["L6","L7","L8","L9","MEGA"],
-      "Changan": ["UNI-V","UNI-K","UNI-T","CS75 Plus","CS55 Plus","CS35 Plus","Deepal SL03","Deepal S7","Avatr 11","Avatr 12"],
-      "Chery": ["Tiggo 9","Tiggo 8 Pro Max","Tiggo 7 Pro","Arrizo 8","Omoda C5","Jaecoo J7"],
-      "Tank": ["300","400 Hi4-T","500 Hi4-T","700 Hi4-T","800"],
-      "Xiaomi": ["SU7","MX11"],
-
-      "Tesla": ["Model 3","Model Y","Model YL","Cybertruck"],
-      "Buick": ["GL8","Regal","LaCrosse","Envision","Encore","Electra E5"],
-      "Cadillac": ["CT4","CT5","CT6","XT4","XT5","XT6","Lyriq"]
+      "Geely": ["Monjaro","Tugella","Coolray","Preface"],
+      "Zeekr": ["001","007","009","X"],
+      "Li Auto": ["L6","L7","L8","L9"],
+      "Toyota": ["Camry","RAV4","Highlander"],
+      "Volkswagen": ["Tiguan L","Teramont","T-Roc","ID.4"]
     };
 
-    const QUICK_BRANDS = [
-      "Geely","BYD","Chery","Changan","Tank","Li Auto","Zeekr","Tesla",
-      "Volkswagen","Toyota","BMW","Audi","Mercedes-Benz","Nissan","Lexus"
-    ];
-
-    const brandSelect = document.getElementById("brandSelect");
-    const modelSelect = document.getElementById("modelSelect");
-    const yearSelect = document.getElementById("yearSelect");
-    const searchBtn = document.getElementById("searchBtn");
-    const statusEl = document.getElementById("status");
-    const resultsEl = document.getElementById("results");
-    const debugEl = document.getElementById("debug");
-    const quickBrandsEl = document.getElementById("quickBrands");
-
-    function setStatus(t) { statusEl.textContent = t || ""; }
-
-    function fillYears() {
-      const current = new Date().getFullYear();
-      let html = `<option value="">Любой</option>`;
-      for (let y = current; y >= 2005; y--) html += `<option value="${y}">${y}</option>`;
-      yearSelect.innerHTML = html;
-      yearSelect.value = "2022";
-    }
+    const priceRange = document.getElementById("priceRange");
+    const priceVal = document.getElementById("priceVal");
+    priceRange.oninput = () => priceVal.innerText = `до ${(priceRange.value / 1000000).toFixed(1)} млн`;
 
     function fillBrands() {
-      const brands = Object.keys(SUGGEST).sort((a,b)=>a.localeCompare(b));
-      brandSelect.innerHTML = brands.map(b => `<option value="${b}">${b}</option>`).join("");
+      const brandSelect = document.getElementById("brandSelect");
+      brandSelect.innerHTML = Object.keys(SUGGEST).map(b => `<option value="${b}">${b}</option>`).join("");
+      fillModels();
     }
 
     function fillModels() {
-      const brand = brandSelect.value;
-      const models = (SUGGEST[brand] || []);
-      modelSelect.innerHTML = models.map(m => `<option value="${m}">${m}</option>`).join("");
+      const brand = document.getElementById("brandSelect").value;
+      const modelSelect = document.getElementById("modelSelect");
+      modelSelect.innerHTML = SUGGEST[brand].map(m => `<option value="${m}">${m}</option>`).join("");
     }
 
-    function renderQuickBrands() {
-      quickBrandsEl.innerHTML = QUICK_BRANDS
-        .filter(b => SUGGEST[b])
-        .map(b => `
-          <button data-brand="${b}" class="rounded-lg border border-slate-800 bg-slate-950 hover:bg-slate-900 px-3 py-2 text-sm transition">
-            ${b}
-          </button>
-        `).join("");
-
-      quickBrandsEl.querySelectorAll("button").forEach(btn => {
-        btn.addEventListener("click", () => {
-          brandSelect.value = btn.dataset.brand;
-          fillModels();
-        });
-      });
-    }
-
-    function card(c) {
-      const title = (c.name || "—").trim();
-      const photo = c.photo || "https://img.dongchedi.com/img/default-car.png";
-      const url = c.url || "";
-      return `
-        <article class="bg-slate-900/60 border border-slate-800 rounded-xl overflow-hidden">
-          <img src="${photo}" alt="" class="w-full h-44 object-cover bg-slate-950" loading="lazy">
-          <div class="p-3">
-            <div class="font-medium">${title}</div>
-            <div class="text-sm text-slate-300 mt-1">Год: ${c.year ?? "—"} • Пробег: ${c.km ?? "—"}</div>
-            <div class="text-lg mt-2">≈ ${c.priceRub ?? "—"} ₽</div>
-            ${url ? `<a class="text-sm text-indigo-400 hover:text-indigo-300 mt-2 inline-block" href="${url}" target="_blank" rel="noopener">Открыть</a>` : ""}
-          </div>
-        </article>
-      `;
+    function fillYears() {
+      const yearSelect = document.getElementById("yearSelect");
+      let html = '<option value="">Год от</option>';
+      for (let y = 2025; y >= 2018; y--) html += `<option value="${y}">${y}</option>`;
+      yearSelect.innerHTML = html;
     }
 
     async function loadCars() {
-      const mark = brandSelect.value;
-      const model = modelSelect.value;
-      const year = yearSelect.value;
+      const resultsEl = document.getElementById("results");
+      resultsEl.innerHTML = '<div class="text-center py-10 animate-pulse text-slate-400 font-bold">Связь с Китаем...</div>';
 
-      resultsEl.innerHTML = "";
-      debugEl.textContent = "";
-      setStatus("Загрузка...");
-
-      const params = new URLSearchParams();
-      params.set("mark", mark);
-      params.set("model", model);
-      if (year) params.set("year", year);
-
-      const url = `${API_URL}?${params.toString()}`;
+      const query = new URLSearchParams({
+        mark: document.getElementById("brandSelect").value,
+        model: document.getElementById("modelSelect").value,
+        year: document.getElementById("yearSelect").value,
+        power: document.getElementById("powerSelect").value,
+        price: priceRange.value
+      });
 
       try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const res = await fetch(`${API_URL}?${query.toString()}`);
         const data = await res.json();
-
-        if (!data?.ok) {
-          setStatus("Backend вернул ok=false.");
-          debugEl.textContent = JSON.stringify(data, null, 2);
-          return;
-        }
-
-        const cars = Array.isArray(data.cars) ? data.cars : [];
-        setStatus(`Найдено: ${cars.length}`);
-        resultsEl.innerHTML = cars.length ? cars.map(card).join("") : `<div class="text-slate-300">Ничего не найдено.</div>`;
+        
+        resultsEl.innerHTML = (data.cars || []).map(c => `
+          <div class="bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm">
+            <img src="${c.photo}" class="w-full h-52 object-cover" onerror="this.src='https://placehold.co/600x400?text=Auto'">
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="font-black text-lg uppercase leading-tight">${c.name}</h3>
+                <span class="text-[10px] font-bold bg-slate-100 px-2 py-1 rounded">${c.year}</span>
+              </div>
+              <div class="text-2xl font-black text-blue-600 mb-3">${c.priceRub} ₽</div>
+              <div class="flex gap-3 text-[10px] font-bold text-slate-400 uppercase">
+                <span>${c.km}</span>
+                <span>${c.power} л.с.</span>
+              </div>
+              <a href="${c.url}" target="_blank" class="block w-full text-center bg-slate-900 text-white py-3 rounded-xl mt-4 font-black text-[10px] uppercase tracking-widest">Открыть оригинал</a>
+            </div>
+          </div>
+        `).join("") || '<div class="text-center py-10 text-slate-400">Нет машин под этот бюджет</div>';
       } catch (e) {
-        setStatus("Ошибка загрузки.");
-        debugEl.textContent = `Ошибка: ${e.message}`;
+        resultsEl.innerHTML = '<div class="text-center text-red-500 font-bold">Ошибка сети</div>';
       }
     }
 
-    // init
-    fillYears();
     fillBrands();
-    brandSelect.value = (SUGGEST["Geely"] ? "Geely" : Object.keys(SUGGEST)[0]);
-    fillModels();
-    renderQuickBrands();
-
-    brandSelect.addEventListener("change", fillModels);
-    searchBtn.addEventListener("click", loadCars);
+    fillYears();
+    document.getElementById("searchBtn").onclick = loadCars;
+    if (window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); }
   </script>
 </body>
 </html>
