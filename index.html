@@ -63,7 +63,6 @@
       </div>
 
       <div class="grid grid-cols-2 gap-3 mb-6">
-        <!-- ИСПРАВЛЕНО: убрали хардкод 2022-2024 -->
         <select id="year" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
           <option value="">Год от</option>
         </select>
@@ -93,33 +92,20 @@
   </div>
 
   <script>
-    // Справочник фильтров (расширен под workflow)
+    // Справочник фильтров
     const modelsData = {
-      // Geely
       "GEELY": ["Monjaro", "Tugella", "Coolray", "Preface", "Okavango", "Emgrand", "Boyue L", "Xingyue L", "Galaxy L7", "Galaxy E8"],
-
-      // BYD
       "BYD": ["Han", "Tang", "Seal", "Dolphin", "Seagull", "Qin Plus", "Qin L", "Song Plus", "Song Pro", "Destroyer 05", "Frigate 07", "Yuan Plus"],
-
-      // Zeekr
       "ZEEKR": ["001", "007", "009", "X"],
-
-      // Li Auto
       "LI AUTO": ["L6", "L7", "L8", "L9", "MEGA"],
-
-      // Chery / Exeed / Omoda / Jaecoo / Jetour
       "CHERY": ["Arrizo 8", "Tiggo 7 Pro", "Tiggo 8 Pro Max", "Tiggo 9"],
       "EXEED": ["RX", "TXL", "VX"],
       "OMODA": ["Omoda C5"],
       "JAECOO": ["Jaecoo J7"],
       "JETOUR": ["X70", "X90"],
-
-      // Great Wall group
       "TANK": ["300", "400 Hi4-T", "500 Hi4-T", "700 Hi4-T"],
       "HAVAL": ["H6", "Dargo", "Jolion"],
       "WEY": ["Coffee 01", "Coffee 02"],
-
-      // Changan / Deepal / Avatr
       "CHANGAN": ["CS35 Plus", "CS55 Plus", "CS75 Plus", "UNI-K", "UNI-T", "UNI-V"],
       "GAC": ["GS8", "Aion Y"],
       "HONGQI": ["H5", "H9"],
@@ -128,26 +114,17 @@
       "XPENG": ["G6", "P7"],
       "XIAOMI": ["SU7", "MX11"],
       "LYNK & CO": ["01", "03"],
-
-      // Toyota
       "TOYOTA": ["Camry", "RAV4", "Highlander", "Frontlander", "Crown Kluger", "Sienna", "Alphard", "Corolla", "Corolla Cross", "Avalon", "Prado"],
-
-      // Nissan / Honda / Lexus
       "NISSAN": ["Sylphy", "Altima", "Ariya", "Qashqai", "X-Trail"],
       "HONDA": ["Civic", "Accord", "CR-V", "HR-V", "ZR-V", "Odyssey", "Elysion"],
       "LEXUS": ["ES", "NX", "RX", "GX", "LX", "LM", "IS", "LS", "RZ"],
-
-      // VW / Audi / BMW / Mercedes
       "VOLKSWAGEN": ["Passat Pro", "Magotan", "Sagitar", "Tayron L", "Tayron X", "Teramont", "Teramont X", "Tavendor", "Talagon", "ID.3", "ID.4 X", "ID.6 X", "Touareg", "CC"],
       "AUDI": ["A3 Sportback", "A3 Limousine", "A4L", "A6L", "A7L", "A8L", "Q2L", "Q3", "Q3 Sportback", "Q5L", "Q5L Sportback", "Q7", "Q8"],
       "BMW": ["i3", "i4", "i7", "iX1", "iX3", "3 Series L", "5 Series L", "X1 L", "X3 L", "X5 L", "7 Series", "M3", "M4", "M5"],
       "MERCEDES-BENZ": ["A-Class L", "C-Class L", "E-Class L", "S-Class", "GLA", "GLB", "GLC L", "GLE", "GLS", "G-Class", "EQB", "EQC", "EQE", "EQS"],
-
-      // Tesla / Buick / Cadillac
       "TESLA": ["Model 3", "Model Y", "Model YL", "Cybertruck"],
       "BUICK": ["GL8", "Regal", "Envision", "Encore", "LaCrosse"],
       "CADILLAC": ["CT4", "CT5", "CT6", "Lyriq"],
-
       "SUBARU": ["Forester", "Outback", "XV"]
     };
 
@@ -160,7 +137,6 @@
       }
     }
 
-    // ИСПРАВЛЕНО: годы формируем динамически (2026..1990 по умолчанию)
     function fillYears(minYear = 1990) {
       const yearSelect = document.getElementById('year');
       const currentYear = new Date().getFullYear();
@@ -193,7 +169,6 @@
       return jsonString.replace(/</g, '\\u003c').replace(/&/g, '\\u0026');
     }
 
-    // Универсально достаём "цену под ключ" из разных версий ответа бэка
     function getTurnkeyPrice(c) {
       if (c && c.priceRub !== undefined && c.priceRub !== null && c.priceRub !== '') return c.priceRub;
       if (c && c.priceTotalRub !== undefined && c.priceTotalRub !== null && c.priceTotalRub !== '') return c.priceTotalRub;
@@ -264,7 +239,6 @@
       });
     }
 
-    // Рендер опций/комплектации
     function renderOptions(c) {
       const opt = c?.options ?? c?.specs ?? null;
       if (!opt) return `<div class="text-[12px] text-slate-400 font-bold">Нет данных по комплектации</div>`;
@@ -308,6 +282,26 @@
       }
 
       return `<div class="text-[12px] text-slate-400 font-bold">Нет данных по комплектации</div>`;
+    }
+
+    // отправка выбранного авто в бота (WebApp sendData)
+    function saveToBot(car) {
+      if (!window.Telegram || !window.Telegram.WebApp) {
+        alert('Откройте мини‑приложение внутри Telegram, чтобы сохранить авто');
+        return;
+      }
+      const tg = window.Telegram.WebApp;
+
+      // Формируем текст, который поймает твой n8n-воркфлоу для лидов
+      const text =
+        'ЛИД: ' +
+        (car.name || '') + '; ' +
+        (car.price || '') + '; ' +
+        (car.brand || '') + '; ' +
+        (car.model || '') + '; ' +
+        `год ${car.year || ''}, пробег ${car.km || ''}, ${car.volume || ''}, ${car.power || ''}, привод ${car.drive || ''}, ссылка ${car.url || ''}`;
+
+      tg.sendData(text); // прилетит как web_app_data в бота [web:51][web:69]
     }
 
     async function search() {
@@ -382,6 +376,25 @@
                   </div>
                 </details>
               </div>
+
+              <button
+                class="block w-full bg-blue-500 text-white text-center py-3 rounded-2xl font-black text-[10px] uppercase mt-3 tracking-[0.2em]"
+                onclick="saveToBot(${JSON.stringify({
+                  name: c.name,
+                  year: c.year,
+                  km: c.km,
+                  volume: c.volume,
+                  power: powerLabel,
+                  drive: c.drive,
+                  price: turnkey,
+                  url: c.url,
+                  photo: photos[0] || c.photo || null,
+                  brand: (c.name || '').split(' ')[0] || '',
+                  model: (c.name || '').split(' ').slice(1).join(' ') || ''
+                }).replace(/"/g, '&quot;')})"
+              >
+                Сохранить авто
+              </button>
 
               <a href="${safeText(c.url, '#')}" target="_blank"
                 class="block w-full bg-slate-900 text-white text-center py-4 rounded-2xl font-black text-[10px] uppercase mt-5 tracking-[0.2em]">
