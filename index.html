@@ -315,28 +315,23 @@
       }
     }
 
+    // поиск под текущий GET /get-cars с query-параметрами
     async function search() {
       const list = document.getElementById('list');
       list.innerHTML = '<div class="text-center py-20 animate-pulse text-slate-300 font-black uppercase text-[10px] tracking-widest">Анализ рынка КНР...</div>';
 
-      const tg = window.Telegram?.WebApp;
-      const user = tg?.initDataUnsafe?.user || {};
-
-      const payload = {
+      const params = new URLSearchParams({
         mark: document.getElementById('brand').value,
         model: document.getElementById('model').value,
         year: document.getElementById('year').value,
         power: document.getElementById('power').value,
         price_min: pMin.value,
         price_max: pMax.value,
-        user
-      };
+      });
 
       try {
-        const res = await fetch('https://plifartorikern.beget.app/webhook/get-cars', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+        const res = await fetch('https://plifartorikern.beget.app/webhook/get-cars?' + params.toString(), {
+          method: 'GET'
         });
         const data = await res.json();
 
