@@ -284,41 +284,60 @@
       return `<div class="text-[12px] text-slate-400 font-bold">Нет данных по комплектации</div>`;
     }
 
-    // отправка выбранного авто в бота (WebApp sendData)
-    function saveToBot(car) {
-      if (!window.Telegram || !window.Telegram.WebApp) {
-        alert('Откройте мини‑приложение внутри Telegram, чтобы сохранить авто');
-        return;
+    // отправка выбранного авто в n8n (save-car)
+    async function saveToBot(car) {
+      const tg = window.Telegram?.WebApp;
+      const user = tg?.initDataUnsafe?.user || {};
+
+      const payload = { car, user };
+
+      try {
+        const res = await fetch('https://plifartorikern.beget.app/webhook/save-car', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+        if (data.ok) {
+          if (tg?.showPopup) {
+            tg.showPopup({ title: 'Сохранено', message: 'Авто добавлено в вашу базу AsiaCar.' });
+          } else {
+            alert('Авто сохранено');
+          }
+        } else {
+          if (tg?.showAlert) tg.showAlert('Ошибка при сохранении авто');
+          else alert('Ошибка при сохранении авто');
+        }
+      } catch (e) {
+        if (tg?.showAlert) tg.showAlert('Ошибка соединения при сохранении авто');
+        else alert('Ошибка соединения при сохранении авто');
       }
-      const tg = window.Telegram.WebApp;
-
-      // Формируем текст, который поймает твой n8n-воркфлоу для лидов
-      const text =
-        'ЛИД: ' +
-        (car.name || '') + '; ' +
-        (car.price || '') + '; ' +
-        (car.brand || '') + '; ' +
-        (car.model || '') + '; ' +
-        `год ${car.year || ''}, пробег ${car.km || ''}, ${car.volume || ''}, ${car.power || ''}, привод ${car.drive || ''}, ссылка ${car.url || ''}`;
-
-      tg.sendData(text); // прилетит как web_app_data в бота [web:51][web:69]
     }
 
     async function search() {
       const list = document.getElementById('list');
       list.innerHTML = '<div class="text-center py-20 animate-pulse text-slate-300 font-black uppercase text-[10px] tracking-widest">Анализ рынка КНР...</div>';
 
-      const query = new URLSearchParams({
+      const tg = window.Telegram?.WebApp;
+      const user = tg?.initDataUnsafe?.user || {};
+
+      const payload = {
         mark: document.getElementById('brand').value,
         model: document.getElementById('model').value,
         year: document.getElementById('year').value,
         power: document.getElementById('power').value,
         price_min: pMin.value,
-        price_max: pMax.value
-      });
+        price_max: pMax.value,
+        user
+      };
 
       try {
-        const res = await fetch(`https://plifartorikern.beget.app/webhook/get-cars?${query}`);
+        const res = await fetch('https://plifartorikern.beget.app/webhook/get-cars', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
         const data = await res.json();
 
         list.innerHTML = (data.cars || []).map(c => {
@@ -386,7 +405,7 @@
                   volume: c.volume,
                   power: powerLabel,
                   drive: c.drive,
-                  price: turnkey,
+                  price: getTurnkeyPrice(c),
                   url: c.url,
                   photo: photos[0] || c.photo || null,
                   brand: (c.name || '').split(' ')[0] || '',
