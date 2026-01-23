@@ -9,219 +9,105 @@
 </head>
 
 <body class="bg-slate-50 text-slate-900 font-sans">
-  <div class="max-w-md mx-auto">
-    <!-- Header -->
-    <div class="px-4 pt-4">
-      <header class="flex justify-between items-center mb-3">
-        <h1 class="text-2xl font-black text-blue-600 italic uppercase tracking-tighter">AsiaCar</h1>
-        <div class="text-[10px] font-bold bg-white border border-slate-200 px-3 py-1 rounded-full shadow-sm text-slate-400">
-          PRO SYSTEM
-        </div>
-      </header>
+  <div class="max-w-md mx-auto p-4">
+    <header class="flex justify-between items-center mb-4">
+      <h1 class="text-2xl font-black text-blue-600 italic uppercase tracking-tighter">AsiaCar</h1>
+      <div class="text-[10px] font-bold bg-white border border-slate-200 px-3 py-1 rounded-full shadow-sm text-slate-400">PRO SYSTEM</div>
+    </header>
+
+    <!-- Tabs -->
+    <div class="bg-white rounded-2xl p-2 shadow-sm border border-slate-100 mb-4 sticky top-2 z-30">
+      <div class="grid grid-cols-3 gap-2">
+        <button id="tabAll" class="py-3 rounded-xl font-black text-[10px] uppercase tracking-widest bg-slate-900 text-white">Все</button>
+        <button id="tabFav" class="py-3 rounded-xl font-black text-[10px] uppercase tracking-widest bg-slate-100 text-slate-700">Избранные</button>
+        <button id="toggleFilters" class="py-3 rounded-xl font-black text-[10px] uppercase tracking-widest bg-blue-600 text-white">Фильтры</button>
+      </div>
     </div>
 
-    <!-- Sticky top bar (like Drom) -->
-    <div class="sticky top-0 z-20 bg-slate-50/90 backdrop-blur-md border-b border-slate-100">
-      <div class="px-4 py-3">
-        <div class="flex items-center gap-2">
-          <!-- Compact quick filter: Brand -->
-          <select id="brandQuick"
-                  class="flex-1 bg-white rounded-2xl px-4 py-3 text-[12px] font-black outline-none border border-slate-100 shadow-sm appearance-none"
-                  onchange="syncQuickToState(); updateModels(); refreshList(true)">
-            <option value="">Все марки</option>
-            <option value="BYD">BYD</option>
-            <option value="CHERY">Chery</option>
-            <option value="CHANGAN">Changan</option>
-            <option value="EXEED">Exeed</option>
-            <option value="GAC">GAC</option>
-            <option value="GEELY">Geely</option>
-            <option value="HAVAL">Haval</option>
-            <option value="HONGQI">Hongqi</option>
-            <option value="JAECOO">Jaecoo</option>
-            <option value="JETOUR">Jetour</option>
-            <option value="LEAPMOTOR">Leapmotor</option>
-            <option value="LI AUTO">Li Auto</option>
-            <option value="LYNK & CO">Lynk &amp; Co</option>
-            <option value="NIO">Nio</option>
-            <option value="OMODA">Omoda</option>
-            <option value="TANK">Tank</option>
-            <option value="WEY">Wey</option>
-            <option value="XPENG">Xpeng</option>
-            <option value="XIAOMI">Xiaomi</option>
-            <option value="ZEEKR">Zeekr</option>
-            <option value="AUDI">Audi</option>
-            <option value="BMW">BMW</option>
-            <option value="MERCEDES-BENZ">Mercedes-Benz</option>
-            <option value="VOLKSWAGEN">Volkswagen</option>
-            <option value="HONDA">Honda</option>
-            <option value="NISSAN">Nissan</option>
-            <option value="TOYOTA">Toyota</option>
-            <option value="LEXUS">Lexus</option>
-            <option value="TESLA">Tesla</option>
-            <option value="BUICK">Buick</option>
-            <option value="CADILLAC">Cadillac</option>
-            <option value="SUBARU">Subaru</option>
-          </select>
+    <!-- Filters (collapsible) -->
+    <div id="filtersWrap" class="bg-white rounded-[2.5rem] p-6 shadow-xl border border-slate-100 mb-6 hidden">
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <select id="brand" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none" onchange="updateModels()">
+          <option value="">Все марки</option>
+          <option value="BYD">BYD</option>
+          <option value="CHERY">Chery</option>
+          <option value="CHANGAN">Changan</option>
+          <option value="EXEED">Exeed</option>
+          <option value="GAC">GAC</option>
+          <option value="GEELY">Geely</option>
+          <option value="HAVAL">Haval</option>
+          <option value="HONGQI">Hongqi</option>
+          <option value="JAECOO">Jaecoo</option>
+          <option value="JETOUR">Jetour</option>
+          <option value="LEAPMOTOR">Leapmotor</option>
+          <option value="LI AUTO">Li Auto</option>
+          <option value="LYNK &amp; CO">Lynk &amp; Co</option>
+          <option value="NIO">Nio</option>
+          <option value="OMODA">Omoda</option>
+          <option value="TANK">Tank</option>
+          <option value="WEY">Wey</option>
+          <option value="XPENG">Xpeng</option>
+          <option value="XIAOMI">Xiaomi</option>
+          <option value="ZEEKR">Zeekr</option>
+          <option value="AUDI">Audi</option>
+          <option value="BMW">BMW</option>
+          <option value="MERCEDES-BENZ">Mercedes-Benz</option>
+          <option value="VOLKSWAGEN">Volkswagen</option>
+          <option value="HONDA">Honda</option>
+          <option value="NISSAN">Nissan</option>
+          <option value="TOYOTA">Toyota</option>
+          <option value="LEXUS">Lexus</option>
+          <option value="TESLA">Tesla</option>
+          <option value="BUICK">Buick</option>
+          <option value="CADILLAC">Cadillac</option>
+          <option value="SUBARU">Subaru</option>
+        </select>
 
-          <!-- Filters button -->
-          <button onclick="openSheet()"
-                  class="shrink-0 bg-blue-600 text-white rounded-2xl px-4 py-3 font-black text-[10px] uppercase tracking-[0.2em] shadow-lg active:scale-95 transition">
-            Фильтры
-          </button>
+        <select id="model" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
+          <option value="">Любая модель</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mb-6">
+        <select id="year" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
+          <option value="">Год от</option>
+        </select>
+        <select id="power" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold border-blue-200 border outline-none appearance-none">
+          <option value="">Мощность (любая)</option>
+          <option value="low">До 160 л.с.</option>
+          <option value="high">160+ л.с.</option>
+        </select>
+      </div>
+
+      <div class="space-y-4 mb-8">
+        <div class="flex justify-between text-[11px] font-black uppercase text-slate-400">
+          <span>От: <span id="minVal" class="text-blue-600 tracking-tighter">1.0 млн</span></span>
+          <span>До: <span id="maxVal" class="text-blue-600 tracking-tighter">10.0 млн</span></span>
         </div>
+        <input type="range" id="priceMin" min="1000000" max="15000000" step="500000" value="1000000" class="w-full h-1 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
+        <input type="range" id="priceMax" min="1000000" max="15000000" step="500000" value="10000000" class="w-full h-1 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
+      </div>
 
-        <!-- Active summary (like chips but compact) -->
-        <div class="mt-2 flex items-center justify-between gap-2">
-          <div id="summary" class="text-[11px] font-black uppercase tracking-widest text-slate-500 truncate">
-            Лента предложений
-          </div>
-
-          <select id="sort"
-                  class="bg-white rounded-xl px-3 py-2 text-[11px] font-black outline-none border border-slate-100 shadow-sm appearance-none"
-                  onchange="applySort()">
-            <option value="relevance">Сортировка</option>
-            <option value="price_asc">Цена ↑</option>
-            <option value="price_desc">Цена ↓</option>
-            <option value="year_desc">Год ↓</option>
-            <option value="km_asc">Пробег ↑</option>
-            <option value="hp_desc">Мощность ↓</option>
-          </select>
-        </div>
-
-        <!-- Status -->
-        <div id="status" class="mt-2 hidden text-[12px] font-bold text-slate-400"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <button id="btnApply" class="w-full bg-blue-600 text-white font-black py-5 rounded-[1.5rem] shadow-lg active:scale-95 transition-all uppercase text-[10px] tracking-[0.2em]">
+          Применить
+        </button>
+        <button id="btnReset" class="w-full bg-slate-900 text-white font-black py-5 rounded-[1.5rem] shadow-lg active:scale-95 transition-all uppercase text-[10px] tracking-[0.2em]">
+          Сброс
+        </button>
       </div>
     </div>
 
     <!-- List -->
-    <div class="px-4 pt-3 pb-24">
-      <div id="list" class="space-y-8"></div>
-      <button id="loadMoreBtn"
-              class="hidden mt-8 w-full bg-white border border-slate-200 rounded-2xl py-4 font-black uppercase text-[10px] tracking-widest text-slate-700 shadow-sm active:scale-95 transition"
-              onclick="loadMore()">
-        Показать ещё
-      </button>
-    </div>
-  </div>
-
-  <!-- Bottom sheet overlay -->
-  <div id="sheetOverlay" class="hidden fixed inset-0 z-40">
-    <div class="absolute inset-0 bg-black/40" onclick="closeSheet()"></div>
-
-    <!-- Sheet -->
-    <div class="absolute left-0 right-0 bottom-0 bg-white rounded-t-[2.5rem] shadow-2xl border-t border-slate-100">
-      <div class="p-5">
-        <div class="flex items-center justify-between mb-4">
-          <div class="text-[12px] font-black uppercase tracking-widest text-slate-500">Фильтры</div>
-          <button onclick="closeSheet()"
-                  class="px-3 py-2 rounded-xl bg-slate-100 font-black text-[10px] uppercase tracking-widest text-slate-700 active:scale-95 transition">
-            Закрыть
-          </button>
-        </div>
-
-        <!-- Filters grid -->
-        <div class="grid grid-cols-2 gap-3 mb-3">
-          <select id="brand" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none"
-                  onchange="updateModels()">
-            <option value="">Все марки</option>
-            <option value="BYD">BYD</option>
-            <option value="CHERY">Chery</option>
-            <option value="CHANGAN">Changan</option>
-            <option value="EXEED">Exeed</option>
-            <option value="GAC">GAC</option>
-            <option value="GEELY">Geely</option>
-            <option value="HAVAL">Haval</option>
-            <option value="HONGQI">Hongqi</option>
-            <option value="JAECOO">Jaecoo</option>
-            <option value="JETOUR">Jetour</option>
-            <option value="LEAPMOTOR">Leapmotor</option>
-            <option value="LI AUTO">Li Auto</option>
-            <option value="LYNK & CO">Lynk &amp; Co</option>
-            <option value="NIO">Nio</option>
-            <option value="OMODA">Omoda</option>
-            <option value="TANK">Tank</option>
-            <option value="WEY">Wey</option>
-            <option value="XPENG">Xpeng</option>
-            <option value="XIAOMI">Xiaomi</option>
-            <option value="ZEEKR">Zeekr</option>
-            <option value="AUDI">Audi</option>
-            <option value="BMW">BMW</option>
-            <option value="MERCEDES-BENZ">Mercedes-Benz</option>
-            <option value="VOLKSWAGEN">Volkswagen</option>
-            <option value="HONDA">Honda</option>
-            <option value="NISSAN">Nissan</option>
-            <option value="TOYOTA">Toyota</option>
-            <option value="LEXUS">Lexus</option>
-            <option value="TESLA">Tesla</option>
-            <option value="BUICK">Buick</option>
-            <option value="CADILLAC">Cadillac</option>
-            <option value="SUBARU">Subaru</option>
-          </select>
-
-          <select id="model" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
-            <option value="">Любая модель</option>
-          </select>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mb-3">
-          <select id="year" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
-            <option value="">Год от</option>
-          </select>
-
-          <select id="power" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold border-blue-200 border outline-none appearance-none">
-            <option value="any">Мощность</option>
-            <option value="low">До 160 л.с.</option>
-            <option value="high">160+ л.с.</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <select id="body" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
-            <option value="">Кузов (любой)</option>
-            <option value="sedan">Седан</option>
-            <option value="hatchback">Хэтчбек</option>
-            <option value="wagon">Универсал</option>
-            <option value="coupe">Купе</option>
-            <option value="pickup">Пикап</option>
-            <option value="minivan">Минивэн</option>
-            <option value="crossover">Кроссовер</option>
-            <option value="suv">SUV / внедорожник</option>
-          </select>
-        </div>
-
-        <!-- Price -->
-        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 mb-4">
-          <div class="flex justify-between text-[11px] font-black uppercase text-slate-400 mb-2">
-            <span>От: <span id="minVal" class="text-blue-600 tracking-tighter">1.0 млн</span></span>
-            <span>До: <span id="maxVal" class="text-blue-600 tracking-tighter">10.0 млн</span></span>
-          </div>
-          <input type="range" id="priceMin" min="1000000" max="15000000" step="500000" value="1000000"
-                 class="w-full h-1 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
-          <input type="range" id="priceMax" min="1000000" max="15000000" step="500000" value="10000000"
-                 class="w-full h-1 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
-          <div class="mt-3 flex gap-2">
-            <button onclick="resetPrice()"
-                    class="flex-1 bg-white border border-slate-200 rounded-2xl py-3 font-black uppercase text-[10px] tracking-widest text-slate-600 active:scale-95 transition">
-              Сброс цены
-            </button>
-            <button onclick="resetAll()"
-                    class="flex-1 bg-white border border-slate-200 rounded-2xl py-3 font-black uppercase text-[10px] tracking-widest text-slate-600 active:scale-95 transition">
-              Сбросить всё
-            </button>
-          </div>
-        </div>
-
-        <button onclick="applyFilters()"
-                class="w-full bg-blue-600 text-white font-black py-5 rounded-[1.5rem] shadow-lg active:scale-95 transition-all uppercase text-[10px] tracking-[0.2em]">
-          Применить
-        </button>
-      </div>
-    </div>
+    <div id="list" class="space-y-10 pb-24"></div>
   </div>
 
   <script>
-    const API_URL = 'https://plifartorikern.beget.app/webhook/get-cars';
+    // ====== Telegram ======
+    const tg = window.Telegram?.WebApp;
+    if (tg) { tg.ready(); tg.expand(); }
 
+    // ====== Models ======
     const modelsData = {
       "GEELY": ["Monjaro", "Tugella", "Coolray", "Preface", "Okavango", "Emgrand", "Boyue L", "Xingyue L", "Galaxy L7", "Galaxy E8"],
       "BYD": ["Han", "Tang", "Seal", "Dolphin", "Seagull", "Qin Plus", "Qin L", "Song Plus", "Song Pro", "Destroyer 05", "Frigate 07", "Yuan Plus"],
@@ -257,49 +143,108 @@
       "SUBARU": ["Forester", "Outback", "XV"]
     };
 
-    const tg = window.Telegram?.WebApp;
-    if (tg) { tg.ready(); tg.expand(); }
-
-    // ------- state -------
-    const state = {
-      cars: [],
-      lastQuery: null,
-      // увеличиваем max_pages при "Показать ещё"
-      max_pages: 8
-    };
-
-    // ------- helpers -------
-    function safeText(v, fallback = '—') {
-      return (v === null || v === undefined || v === '') ? fallback : String(v);
+    function updateModels() {
+      const b = document.getElementById('brand').value;
+      const m = document.getElementById('model');
+      m.innerHTML = '<option value="">Любая модель</option>';
+      if (modelsData[b]) {
+        modelsData[b].forEach(item => m.innerHTML += `<option value="${item.toUpperCase()}">${item}</option>`);
+      }
     }
+
+    function fillYears(minYear = 1990) {
+      const yearSelect = document.getElementById('year');
+      const currentYear = new Date().getFullYear();
+      yearSelect.innerHTML = '<option value="">Год от</option>';
+      for (let y = currentYear; y >= minYear; y--) {
+        yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
+      }
+    }
+
+    // ====== Price sliders ======
+    const pMin = document.getElementById("priceMin");
+    const pMax = document.getElementById("priceMax");
+    const minValEl = document.getElementById("minVal");
+    const maxValEl = document.getElementById("maxVal");
+
+    function syncPriceLabels() {
+      minValEl.innerText = (pMin.value/1000000).toFixed(1) + ' млн';
+      maxValEl.innerText = (pMax.value/1000000).toFixed(1) + ' млн';
+    }
+    pMin.oninput = syncPriceLabels;
+    pMax.oninput = syncPriceLabels;
+
+    // ====== App state ======
+    const API_URL = 'https://plifartorikern.beget.app/webhook/get-cars';
+    let currentTab = 'all';
+    let lastCars = [];
+
+    // ====== Favorites (localStorage) ======
+    const FAV_KEY = 'asiacar_favorites_v1';
+
+    function loadFavMap() {
+      try {
+        const raw = localStorage.getItem(FAV_KEY);
+        const obj = raw ? JSON.parse(raw) : {};
+        return (obj && typeof obj === 'object') ? obj : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveFavMap(map) {
+      localStorage.setItem(FAV_KEY, JSON.stringify(map));
+    }
+
+    function carId(c) {
+      // максимально стабильный идентификатор
+      const u = (c?.url || '').trim();
+      if (u) return 'u:' + u;
+      return 'x:' + [c?.name, c?.year, c?.km, c?.photo].map(v => (v ?? '')).join('|');
+    }
+
+    function isFav(c) {
+      const fav = loadFavMap();
+      return !!fav[carId(c)];
+    }
+
+    function toggleFav(c) {
+      const fav = loadFavMap();
+      const id = carId(c);
+      if (fav[id]) delete fav[id];
+      else fav[id] = { savedAt: Date.now(), car: c };
+      saveFavMap(fav);
+      render();
+    }
+
+    function getFavCars() {
+      const fav = loadFavMap();
+      return Object.values(fav)
+        .sort((a,b) => (b.savedAt || 0) - (a.savedAt || 0))
+        .map(x => x.car)
+        .filter(Boolean);
+    }
+
+    // ====== UI helpers ======
+    function safeText(v, fallback = '') {
+      return (v === null || v === undefined) ? fallback : String(v);
+    }
+
     function safePhotosFromCar(c) {
       const arr = Array.isArray(c.photos) ? c.photos.filter(Boolean) : [];
       return arr.length ? arr : (c.photo ? [c.photo] : []);
     }
+
     function escapeForDataAttr(jsonString) {
       return jsonString.replace(/</g, '\\u003c').replace(/&/g, '\\u0026');
     }
+
     function getTurnkeyPrice(c) {
       if (c && c.priceRub) return c.priceRub;
       const n = c?.priceBreakdown?.total ?? null;
       return typeof n === 'number' ? n.toLocaleString('ru-RU') : '';
     }
-    function getTurnkeyTotalNumber(c) {
-      const n = c?.priceBreakdown?.total ?? null;
-      return typeof n === 'number' ? n : null;
-    }
-    function parseHpNumber(powerString) {
-      if (!powerString) return null;
-      const m = String(powerString).match(/(\d+(?:[\.,]\d+)?)/);
-      if (!m) return null;
-      const n = Number(m[1].replace(',', '.'));
-      return Number.isFinite(n) ? n : null;
-    }
-    function parseKmNumber(kmString) {
-      if (!kmString) return null;
-      const n = Number(String(kmString).replace(/\s/g,'').replace(/[^0-9]/g,''));
-      return Number.isFinite(n) ? n : null;
-    }
+
     function renderOptions(c) {
       const opt = c?.options ?? c?.specs ?? null;
       if (!opt) return `<div class="text-[12px] text-slate-400 font-bold">Нет данных</div>`;
@@ -309,13 +254,14 @@
         <div class="grid grid-cols-1 gap-2">
           ${entries.slice(0, 14).map(([k, v]) => `
             <div class="flex justify-between gap-3 text-[12px] font-bold uppercase">
-              <span class="text-slate-400">${safeText(k, '').replace(/_/g,' ')}</span>
-              <span class="text-slate-900 text-right">${safeText(v, '')}</span>
+              <span class="text-slate-400">${safeText(k).replace(/_/g,' ')}</span>
+              <span class="text-slate-900 text-right">${safeText(v)}</span>
             </div>
           `).join('')}
         </div>
       `;
     }
+
     function attachGalleryHandlers() {
       document.querySelectorAll('.js-thumb').forEach(th => {
         th.onclick = (e) => {
@@ -328,66 +274,19 @@
           main.dataset.index = idx;
         };
       });
+
+      document.querySelectorAll('.js-like').forEach(btn => {
+        btn.onclick = (e) => {
+          const idx = Number(e.currentTarget.dataset.idx);
+          const car = (currentTab === 'fav') ? getFavCars()[idx] : lastCars[idx];
+          if (!car) return;
+          toggleFav(car);
+        };
+      });
     }
 
-    function fillYears(minYear = 1990) {
-      const yearSelect = document.getElementById('year');
-      const currentYear = new Date().getFullYear();
-      yearSelect.innerHTML = '<option value="">Год от</option>';
-      for (let y = currentYear; y >= minYear; y--) {
-        yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
-      }
-    }
-
-    function updateModels() {
-      const b = document.getElementById('brand').value;
-      const m = document.getElementById('model');
-      m.innerHTML = '<option value="">Любая модель</option>';
-      if (modelsData[b]) {
-        modelsData[b].forEach(item => m.innerHTML += `<option value="${item.toUpperCase()}">${item}</option>`);
-      }
-      // sync quick
-      document.getElementById('brandQuick').value = b;
-    }
-
-    // price labels
-    const pMin = () => document.getElementById("priceMin");
-    const pMax = () => document.getElementById("priceMax");
-    function updatePriceLabels() {
-      document.getElementById("minVal").innerText = (pMin().value/1000000).toFixed(1) + ' млн';
-      document.getElementById("maxVal").innerText = (pMax().value/1000000).toFixed(1) + ' млн';
-    }
-
-    function resetPrice() {
-      pMin().value = 1000000;
-      pMax().value = 10000000;
-      updatePriceLabels();
-    }
-
-    function resetAll() {
-      document.getElementById('brand').value = '';
-      document.getElementById('model').value = '';
-      document.getElementById('year').value = '';
-      document.getElementById('power').value = 'any';
-      document.getElementById('body').value = '';
-      resetPrice();
-      updateModels();
-    }
-
-    function openSheet() {
-      document.getElementById('sheetOverlay').classList.remove('hidden');
-    }
-    function closeSheet() {
-      document.getElementById('sheetOverlay').classList.add('hidden');
-    }
-
-    function syncQuickToState() {
-      // quick brand -> full brand
-      const b = document.getElementById('brandQuick').value;
-      document.getElementById('brand').value = b;
-    }
-
-    function buildUserInfo() {
+    // ====== Filters get/set ======
+    function getUserInfoForLogs() {
       const user = tg?.initDataUnsafe?.user;
       let userInfo = 'Аноним';
       if (user) {
@@ -398,208 +297,209 @@
       return userInfo;
     }
 
-    function applyPowerParams(params) {
-      const p = document.getElementById('power').value;
-      // UI -> backend numbers
-      if (p === 'low') params.set('power_max', '160');
-      if (p === 'high') params.set('power_min', '161');
-    }
+    function buildParams() {
+      const brand = document.getElementById('brand').value;
+      const model = document.getElementById('model').value;
 
-    function buildQueryParams() {
+      // default: год от 2022 (если пользователь не выбрал)
+      const yearVal = document.getElementById('year').value;
+      const year = yearVal || '2022';
+
+      // power: low/high -> translate to power_min/max
+      const power = document.getElementById('power').value;
+      let power_min = '';
+      let power_max = '';
+      if (power === 'low') { power_max = '160'; }
+      if (power === 'high') { power_min = '161'; }
+
       const params = new URLSearchParams({
-        mark: document.getElementById('brand').value,
-        model: document.getElementById('model').value,
-        year: document.getElementById('year').value,
-        body: document.getElementById('body').value,
-        price_min: pMin().value,
-        price_max: pMax().value,
-        user: buildUserInfo(),
-        max_pages: String(state.max_pages)
+        mark: brand,
+        model: model,
+        year: year,
+        price_min: pMin.value,
+        price_max: pMax.value,
+        user: getUserInfoForLogs()
       });
-      applyPowerParams(params);
+
+      if (power_min) params.set('power_min', power_min);
+      if (power_max) params.set('power_max', power_max);
+
       return params;
     }
 
-    function updateSummary() {
-      const mark = document.getElementById('brand').value;
-      const model = document.getElementById('model').value;
-      const year = document.getElementById('year').value;
-      const body = document.getElementById('body').value;
-      const power = document.getElementById('power').value;
-
-      const min = Number(pMin().value);
-      const max = Number(pMax().value);
-
-      const parts = [];
-      if (mark) parts.push(mark);
-      if (model) parts.push(model);
-      if (year) parts.push(`от ${year}`);
-      if (body) parts.push(`кузов: ${body}`);
-      if (power === 'low') parts.push('до 160 л.с.');
-      if (power === 'high') parts.push('160+ л.с.');
-      if (!(min === 1000000 && max === 10000000)) parts.push(`${(min/1e6).toFixed(1)}–${(max/1e6).toFixed(1)} млн`);
-
-      document.getElementById('summary').innerText = parts.length ? parts.join(' • ') : 'Лента предложений';
+    function resetFiltersToDefault() {
+      document.getElementById('brand').value = '';
+      updateModels();
+      document.getElementById('model').value = '';
+      document.getElementById('year').value = '2022';  // дефолт свежие авто
+      document.getElementById('power').value = '';
+      pMin.value = 1000000;
+      pMax.value = 10000000;
+      syncPriceLabels();
     }
 
-    function setStatus(text, show = true) {
-      const el = document.getElementById('status');
-      if (!show) { el.classList.add('hidden'); return; }
-      el.classList.remove('hidden');
-      el.innerText = text;
-    }
-
-    // sorting
-    function applySort() {
-      state.cars = sortCars(state.cars);
-      renderList(state.cars);
-    }
-
-    function sortCars(cars) {
-      const sort = document.getElementById('sort').value;
-      const arr = [...cars];
-
-      const by = {
-        relevance: () => 0,
-        price_asc: (a,b) => (getTurnkeyTotalNumber(a) ?? 1e18) - (getTurnkeyTotalNumber(b) ?? 1e18),
-        price_desc: (a,b) => (getTurnkeyTotalNumber(b) ?? -1) - (getTurnkeyTotalNumber(a) ?? -1),
-        year_desc: (a,b) => (Number(b.year) || 0) - (Number(a.year) || 0),
-        km_asc: (a,b) => (parseKmNumber(a.km) ?? 1e18) - (parseKmNumber(b.km) ?? 1e18),
-        hp_desc: (a,b) => (parseHpNumber(b.power) ?? -1) - (parseHpNumber(a.power) ?? -1)
-      };
-
-      arr.sort(by[sort] || by.relevance);
-      return arr;
-    }
-
-    function renderList(cars) {
+    // ====== Data fetch ======
+    async function fetchCars() {
       const list = document.getElementById('list');
-
-      if (!cars.length) {
-        list.innerHTML = '<div class="text-center py-20 font-bold text-slate-400">Ничего не найдено</div>';
-        return;
-      }
-
-      list.innerHTML = cars.map(c => {
-        const photos = safePhotosFromCar(c);
-        const turnkey = getTurnkeyPrice(c);
-
-        return `
-          <div class="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100">
-            <div class="relative">
-              <img src="${safeText(c.photo, photos[0] || '')}" class="w-full h-56 object-cover js-main-photo"
-                   data-photos='${escapeForDataAttr(JSON.stringify(photos))}' data-index="0">
-              ${photos.length ? `
-                <div class="absolute bottom-3 right-3 flex gap-1.5 bg-black/20 p-1.5 rounded-2xl backdrop-blur-sm">
-                  ${photos.slice(0, 5).map((p, idx) => `
-                    <img src="${p}" class="w-10 h-10 rounded-xl border-2 border-white object-cover cursor-pointer js-thumb" data-idx="${idx}">
-                  `).join("")}
-                </div>
-              ` : ''}
-            </div>
-
-            <div class="p-6">
-              <h3 class="font-black uppercase text-lg mb-3 text-slate-800">${safeText(c.name, '')}</h3>
-
-              <div class="space-y-2 text-[13px] font-bold text-slate-500 uppercase mb-5">
-                <div>📍 ПРОБЕГ: <span class="text-slate-900">${safeText(c.km)}</span></div>
-                <div>📅 ГОД: <span class="text-slate-900">${safeText(c.year)} г.</span></div>
-                <div>✅ ДВС: <span class="text-slate-900">${safeText(c.volume)}</span></div>
-                <div>⚙️ МОЩНОСТЬ: <span class="text-slate-900">${safeText(c.power)}</span></div>
-                <div>➕ ПРИВОД: <span class="text-slate-900">${safeText(c.drive)}</span></div>
-              </div>
-
-              <div class="pt-4 border-t border-slate-100">
-                <div class="text-[10px] font-black text-slate-400 uppercase mb-1">Цена под ключ до РФ:</div>
-                <div class="text-3xl font-black text-blue-600 tracking-tighter">${safeText(turnkey, '')} ₽</div>
-              </div>
-
-              <div class="mt-4">
-                <details class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                  <summary class="cursor-pointer font-black text-[10px] uppercase tracking-widest text-slate-700">
-                    Опции / комплектация
-                  </summary>
-                  <div class="mt-4">${renderOptions(c)}</div>
-                </details>
-              </div>
-
-              <a href="${safeText(c.url, '#')}" target="_blank"
-                 class="block w-full bg-slate-900 text-white text-center py-4 rounded-2xl font-black text-[10px] uppercase mt-4 tracking-widest">
-                Оригинал
-              </a>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      attachGalleryHandlers();
-    }
-
-    async function refreshList(resetPages) {
-      if (resetPages) state.max_pages = 8;
-
-      updateSummary();
-
-      const list = document.getElementById('list');
-      list.innerHTML = `
-        <div class="text-center py-16 animate-pulse text-slate-300 font-black uppercase text-[10px] tracking-widest">
-          Анализ рынка КНР...
-        </div>
-      `;
-      setStatus('Загрузка…', true);
-
-      const params = buildQueryParams();
-      state.lastQuery = params.toString();
+      list.innerHTML = '<div class="text-center py-16 animate-pulse text-slate-300 font-black uppercase text-[10px] tracking-widest">Загружаю свежие предложения...</div>';
 
       try {
+        const params = buildParams();
         const res = await fetch(API_URL + '?' + params.toString());
         const data = await res.json();
 
-        const cars = Array.isArray(data.cars) ? data.cars : [];
-        state.cars = sortCars(cars);
-        renderList(state.cars);
+        lastCars = Array.isArray(data?.cars) ? data.cars : [];
+        render();
 
-        // статус/подсказки
-        const meta = data.meta || {};
-        const pages = meta?.stats?.pagesTried ?? '—';
-        const fetched = meta?.stats?.offersFetched ?? '—';
-        const warn = meta?.warning ? ` • ${meta.warning}` : '';
-        setStatus(`Найдено: ${state.cars.length} • страниц: ${pages} • офферов: ${fetched}${warn}`, true);
-
-        // кнопка "показать ещё" — просто увеличим max_pages и перезагрузим (да, это повторный запрос, но самый простой UX)
-        document.getElementById('loadMoreBtn').classList.toggle('hidden', state.cars.length < 20);
-
+        // авто-сворачиваем фильтры после поиска
+        document.getElementById('filtersWrap').classList.add('hidden');
       } catch (e) {
-        setStatus('Ошибка соединения', true);
-        list.innerHTML = '<div class="text-center py-20 font-bold text-red-500">Ошибка соединения</div>';
+        list.innerHTML = '<div class="text-center py-16 font-bold text-slate-400">Ошибка соединения</div>';
       }
     }
 
-    function applyFilters() {
-      // sync full -> quick
-      document.getElementById('brandQuick').value = document.getElementById('brand').value;
-      closeSheet();
-      refreshList(true);
-      // легкий скролл вниз к ленте (чтобы как Дром)
-      document.getElementById('list').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // ====== Render ======
+    function render() {
+      const list = document.getElementById('list');
+
+      if (currentTab === 'fav') {
+        const favCars = getFavCars();
+        if (!favCars.length) {
+          list.innerHTML = `
+            <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
+              <div class="font-black uppercase text-slate-700 mb-2">Избранных пока нет</div>
+              <div class="text-sm text-slate-500 font-bold">Нажимай ❤️ на карточках — и они появятся здесь.</div>
+            </div>
+          `;
+          return;
+        }
+        list.innerHTML = favCars.map((c, idx) => renderCard(c, idx, true)).join('');
+        attachGalleryHandlers();
+        return;
+      }
+
+      // all
+      if (!lastCars.length) {
+        list.innerHTML = '<div class="text-center py-16 font-bold text-slate-400">Ничего не найдено</div>';
+        return;
+      }
+
+      list.innerHTML = lastCars.map((c, idx) => renderCard(c, idx, false)).join('');
+      attachGalleryHandlers();
     }
 
-    function loadMore() {
-      state.max_pages = Math.min(state.max_pages + 6, 30);
-      refreshList(false);
+    function renderCard(c, idx, inFavTab) {
+      const photos = safePhotosFromCar(c);
+      const turnkey = getTurnkeyPrice(c);
+      const liked = isFav(c);
+
+      return `
+      <div class="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100">
+        <div class="relative">
+          <img src="${c.photo || photos[0]}" class="w-full h-64 object-cover js-main-photo" data-photos='${escapeForDataAttr(JSON.stringify(photos))}' data-index="0">
+
+          <!-- Like -->
+          <button class="js-like absolute top-4 right-4 w-12 h-12 rounded-2xl backdrop-blur bg-white/80 border border-white shadow-lg flex items-center justify-center active:scale-95 transition"
+                  data-idx="${idx}"
+                  aria-label="Нравится">
+            <span class="text-2xl">${liked ? '❤️' : '🤍'}</span>
+          </button>
+
+          <div class="absolute bottom-3 right-3 flex gap-1.5 bg-black/20 p-1.5 rounded-2xl backdrop-blur-sm">
+            ${photos.slice(0, 5).map((p, tIdx) => `<img src="${p}" class="w-10 h-10 rounded-xl border-2 border-white object-cover cursor-pointer js-thumb" data-idx="${tIdx}">`).join("")}
+          </div>
+        </div>
+
+        <div class="p-6">
+          <h3 class="font-black uppercase text-xl mb-4 text-slate-800">${safeText(c.name)}</h3>
+
+          <div class="space-y-2 text-[13px] font-bold text-slate-500 uppercase mb-6">
+            <div>📍 ПРОБЕГ: <span class="text-slate-900">${safeText(c.km)}</span></div>
+            <div>📅 ГОД: <span class="text-slate-900">${safeText(c.year)} г.</span></div>
+            <div>✅ ДВС: <span class="text-slate-900">${safeText(c.volume)}</span></div>
+            <div>⚙️ МОЩНОСТЬ: <span class="text-slate-900">${safeText(c.power)}</span></div>
+            <div>➕ ПРИВОД: <span class="text-slate-900">${safeText(c.drive)}</span></div>
+          </div>
+
+          <div class="pt-5 border-t border-slate-100">
+            <div class="text-[10px] font-black text-slate-400 uppercase mb-1">Цена под ключ до РФ:</div>
+            <div class="text-3xl font-black text-blue-600 tracking-tighter">${turnkey} ₽</div>
+          </div>
+
+          <div class="mt-5">
+            <details class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+              <summary class="cursor-pointer font-black text-[10px] uppercase tracking-widest text-slate-700">Опции / комплектация</summary>
+              <div class="mt-4">${renderOptions(c)}</div>
+            </details>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 mt-5">
+            <a href="${safeText(c.url, '#')}" target="_blank"
+               class="block w-full bg-slate-900 text-white text-center py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest">
+              Оригинал
+            </a>
+            <button class="js-like w-full bg-blue-600 text-white text-center py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest active:scale-95 transition"
+                    data-idx="${idx}">
+              ${liked ? 'Убрать ❤️' : 'В избранное'}
+            </button>
+          </div>
+
+          ${inFavTab ? `
+            <div class="mt-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
+              Это авто в избранном
+            </div>
+          ` : ''}
+        </div>
+      </div>
+      `;
     }
 
-    // init
-    document.getElementById("priceMin").addEventListener('input', updatePriceLabels);
-    document.getElementById("priceMax").addEventListener('input', updatePriceLabels);
+    // ====== Tabs + Filters UI ======
+    function setTab(tab) {
+      currentTab = tab;
 
-    fillYears(1990);
-    updatePriceLabels();
+      const tabAll = document.getElementById('tabAll');
+      const tabFav = document.getElementById('tabFav');
+
+      if (tab === 'all') {
+        tabAll.className = 'py-3 rounded-xl font-black text-[10px] uppercase tracking-widest bg-slate-900 text-white';
+        tabFav.className = 'py-3 rounded-xl font-black text-[10px] uppercase tracking-widest bg-slate-100 text-slate-700';
+      } else {
+        tabFav.className = 'py-3 rounded-xl font-black text-[10px] uppercase tracking-widest bg-slate-900 text-white';
+        tabAll.className = 'py-3 rounded-xl font-black text-[10px] uppercase tracking-widest bg-slate-100 text-slate-700';
+      }
+      render();
+    }
+
+    document.getElementById('tabAll').onclick = () => setTab('all');
+    document.getElementById('tabFav').onclick = () => setTab('fav');
+
+    document.getElementById('toggleFilters').onclick = () => {
+      const wrap = document.getElementById('filtersWrap');
+      wrap.classList.toggle('hidden');
+    };
+
+    document.getElementById('btnApply').onclick = async () => {
+      setTab('all');
+      await fetchCars();
+    };
+
+    document.getElementById('btnReset').onclick = async () => {
+      resetFiltersToDefault();
+      setTab('all');
+      await fetchCars();
+    };
+
+    // ====== Init defaults ======
     updateModels();
-    updateSummary();
+    fillYears(1990);
+    syncPriceLabels();
 
-    // on open: show feed immediately (like Drom)
-    refreshList(true);
+    // default year = 2022
+    document.getElementById('year').value = '2022';
+
+    // автозагрузка на старте (свежие авто)
+    fetchCars();
   </script>
 </body>
 </html>
