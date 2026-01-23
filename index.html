@@ -10,123 +10,88 @@
 
 <body class="bg-slate-50 text-slate-900 font-sans">
   <div class="max-w-md mx-auto p-4">
-    <header class="flex justify-between items-center mb-4">
+    <header class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-black text-blue-600 italic uppercase tracking-tighter">AsiaCar</h1>
-      <div class="text-[10px] font-bold bg-white border border-slate-200 px-3 py-1 rounded-full shadow-sm text-slate-400">
-        PRO SYSTEM
-      </div>
+      <div class="text-[10px] font-bold bg-white border border-slate-200 px-3 py-1 rounded-full shadow-sm text-slate-400">PRO SYSTEM</div>
     </header>
 
-    <!-- Filters -->
-    <div class="sticky top-3 z-10">
-      <div class="bg-white rounded-[2.5rem] p-6 shadow-xl border border-slate-100 mb-4">
-        <div class="grid grid-cols-2 gap-3 mb-3">
-          <select id="brand"
-                  class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none"
-                  onchange="updateModels()">
-            <option value="">Все марки</option>
-            <option value="BYD">BYD</option>
-            <option value="CHERY">Chery</option>
-            <option value="CHANGAN">Changan</option>
-            <option value="EXEED">Exeed</option>
-            <option value="GAC">GAC</option>
-            <option value="GEELY">Geely</option>
-            <option value="HAVAL">Haval</option>
-            <option value="HONGQI">Hongqi</option>
-            <option value="JAECOO">Jaecoo</option>
-            <option value="JETOUR">Jetour</option>
-            <option value="LEAPMOTOR">Leapmotor</option>
-            <option value="LI AUTO">Li Auto</option>
-            <option value="LYNK & CO">Lynk &amp; Co</option>
-            <option value="NIO">Nio</option>
-            <option value="OMODA">Omoda</option>
-            <option value="TANK">Tank</option>
-            <option value="WEY">Wey</option>
-            <option value="XPENG">Xpeng</option>
-            <option value="XIAOMI">Xiaomi</option>
-            <option value="ZEEKR">Zeekr</option>
-            <option value="AUDI">Audi</option>
-            <option value="BMW">BMW</option>
-            <option value="MERCEDES-BENZ">Mercedes-Benz</option>
-            <option value="VOLKSWAGEN">Volkswagen</option>
-            <option value="HONDA">Honda</option>
-            <option value="NISSAN">Nissan</option>
-            <option value="TOYOTA">Toyota</option>
-            <option value="LEXUS">Lexus</option>
-            <option value="TESLA">Tesla</option>
-            <option value="BUICK">Buick</option>
-            <option value="CADILLAC">Cadillac</option>
-            <option value="SUBARU">Subaru</option>
-          </select>
+    <!-- Кнопка появляется когда фильтры свернуты -->
+    <button id="filtersToggle"
+      class="hidden w-full bg-white border border-slate-100 shadow-sm rounded-2xl px-4 py-4 mb-4 font-black uppercase text-[10px] tracking-widest text-slate-700 active:scale-95 transition"
+      onclick="toggleFilters(true)">
+      ⚙️ Показать фильтры
+    </button>
 
-          <select id="model" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
-            <option value="">Любая модель</option>
-          </select>
-        </div>
+    <!-- Панель фильтров -->
+    <div id="filtersPanel" class="bg-white rounded-[2.5rem] p-6 shadow-xl border border-slate-100 mb-8">
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <select id="brand" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none" onchange="updateModels()">
+          <option value="">Все марки</option>
+          <option value="BYD">BYD</option>
+          <option value="CHERY">Chery</option>
+          <option value="CHANGAN">Changan</option>
+          <option value="EXEED">Exeed</option>
+          <option value="GAC">GAC</option>
+          <option value="GEELY">Geely</option>
+          <option value="HAVAL">Haval</option>
+          <option value="HONGQI">Hongqi</option>
+          <option value="JAECOO">Jaecoo</option>
+          <option value="JETOUR">Jetour</option>
+          <option value="LEAPMOTOR">Leapmotor</option>
+          <option value="LI AUTO">Li Auto</option>
+          <option value="LYNK & CO">Lynk &amp; Co</option>
+          <option value="NIO">Nio</option>
+          <option value="OMODA">Omoda</option>
+          <option value="TANK">Tank</option>
+          <option value="WEY">Wey</option>
+          <option value="XPENG">Xpeng</option>
+          <option value="XIAOMI">Xiaomi</option>
+          <option value="ZEEKR">Zeekr</option>
+          <option value="AUDI">Audi</option>
+          <option value="BMW">BMW</option>
+          <option value="MERCEDES-BENZ">Mercedes-Benz</option>
+          <option value="VOLKSWAGEN">Volkswagen</option>
+          <option value="HONDA">Honda</option>
+          <option value="NISSAN">Nissan</option>
+          <option value="TOYOTA">Toyota</option>
+          <option value="LEXUS">Lexus</option>
+          <option value="TESLA">Tesla</option>
+          <option value="BUICK">Buick</option>
+          <option value="CADILLAC">Cadillac</option>
+          <option value="SUBARU">Subaru</option>
+        </select>
 
-        <div class="grid grid-cols-2 gap-3 mb-3">
-          <select id="year" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
-            <option value="">Год от</option>
-          </select>
-
-          <!-- Power filter (UI) -->
-          <select id="power" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold border-blue-200 border outline-none appearance-none">
-            <option value="any">Мощность</option>
-            <option value="low">До 160 л.с.</option>
-            <option value="high">160+ л.с.</option>
-          </select>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mb-6">
-          <!-- Body filter -->
-          <select id="body" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
-            <option value="">Кузов (любой)</option>
-            <option value="sedan">Седан</option>
-            <option value="suv">SUV / внедорожник</option>
-            <option value="crossover">Кроссовер</option>
-            <option value="hatchback">Хэтчбек</option>
-            <option value="wagon">Универсал</option>
-            <option value="minivan">Минивэн</option>
-            <option value="pickup">Пикап</option>
-            <option value="coupe">Купе</option>
-          </select>
-
-          <!-- Sort -->
-          <select id="sort" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
-            <option value="relevance">Сортировка</option>
-            <option value="price_asc">Цена ↑</option>
-            <option value="price_desc">Цена ↓</option>
-            <option value="year_desc">Год ↓</option>
-            <option value="km_asc">Пробег ↑</option>
-            <option value="hp_desc">Мощность ↓</option>
-          </select>
-        </div>
-
-        <div class="space-y-4 mb-6">
-          <div class="flex justify-between text-[11px] font-black uppercase text-slate-400">
-            <span>От: <span id="minVal" class="text-blue-600 tracking-tighter">1.0 млн</span></span>
-            <span>До: <span id="maxVal" class="text-blue-600 tracking-tighter">10.0 млн</span></span>
-          </div>
-          <input type="range" id="priceMin" min="1000000" max="15000000" step="500000" value="1000000"
-                 class="w-full h-1 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
-          <input type="range" id="priceMax" min="1000000" max="15000000" step="500000" value="10000000"
-                 class="w-full h-1 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
-        </div>
-
-        <!-- Active filters chips -->
-        <div id="chips" class="flex flex-wrap gap-2 mb-5"></div>
-
-        <button onclick="search()"
-                class="w-full bg-blue-600 text-white font-black py-5 rounded-[1.5rem] shadow-lg active:scale-95 transition-all uppercase text-[10px] tracking-[0.2em]">
-          Найти предложения
-        </button>
+        <select id="model" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
+          <option value="">Любая модель</option>
+        </select>
       </div>
 
-      <!-- Status bar -->
-      <div id="statusBar" class="hidden bg-white border border-slate-100 shadow-sm rounded-2xl px-4 py-3 mb-4">
-        <div id="statusText" class="text-[11px] font-black uppercase tracking-widest text-slate-500"></div>
-        <div id="warningText" class="mt-2 text-[12px] font-bold text-amber-700"></div>
+      <div class="grid grid-cols-2 gap-3 mb-6">
+        <select id="year" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
+          <option value="">Год от</option>
+        </select>
+
+        <select id="power" class="w-full bg-slate-100 rounded-2xl p-4 text-sm font-bold border-blue-200 border outline-none appearance-none">
+          <option value="any">Мощность</option>
+          <option value="low">До 160 л.с.</option>
+          <option value="high">160+ л.с.</option>
+        </select>
       </div>
+
+      <div class="space-y-4 mb-8">
+        <div class="flex justify-between text-[11px] font-black uppercase text-slate-400">
+          <span>От: <span id="minVal" class="text-blue-600 tracking-tighter">1.0 млн</span></span>
+          <span>До: <span id="maxVal" class="text-blue-600 tracking-tighter">10.0 млн</span></span>
+        </div>
+        <input type="range" id="priceMin" min="1000000" max="15000000" step="500000" value="1000000"
+               class="w-full h-1 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
+        <input type="range" id="priceMax" min="1000000" max="15000000" step="500000" value="10000000"
+               class="w-full h-1 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
+      </div>
+
+      <button onclick="search()" class="w-full bg-blue-600 text-white font-black py-5 rounded-[1.5rem] shadow-lg active:scale-95 transition-all uppercase text-[10px] tracking-[0.2em]">
+        Найти предложения
+      </button>
     </div>
 
     <div id="list" class="space-y-10 pb-20"></div>
@@ -178,7 +143,6 @@
       if (modelsData[b]) {
         modelsData[b].forEach(item => m.innerHTML += `<option value="${item.toUpperCase()}">${item}</option>`);
       }
-      renderChips();
     }
 
     function fillYears(minYear = 1990) {
@@ -192,12 +156,8 @@
 
     const pMin = document.getElementById("priceMin");
     const pMax = document.getElementById("priceMax");
-    pMin.oninput = () => { document.getElementById("minVal").innerText = (pMin.value/1000000).toFixed(1) + ' млн'; renderChips(); };
-    pMax.oninput = () => { document.getElementById("maxVal").innerText = (pMax.value/1000000).toFixed(1) + ' млн'; renderChips(); };
-
-    ['model','year','power','body','sort'].forEach(id => {
-      document.getElementById(id).addEventListener('change', renderChips);
-    });
+    pMin.oninput = () => document.getElementById("minVal").innerText = (pMin.value/1000000).toFixed(1) + ' млн';
+    pMax.oninput = () => document.getElementById("maxVal").innerText = (pMax.value/1000000).toFixed(1) + ' млн';
 
     function safeText(v, fallback = '') {
       return (v === null || v === undefined) ? fallback : String(v);
@@ -216,26 +176,6 @@
       if (c && c.priceRub) return c.priceRub;
       const n = c?.priceBreakdown?.total ?? null;
       return typeof n === 'number' ? n.toLocaleString('ru-RU') : '';
-    }
-
-    function getTurnkeyTotalNumber(c) {
-      const n = c?.priceBreakdown?.total ?? null;
-      return typeof n === 'number' ? n : null;
-    }
-
-    function parseHpNumber(powerString) {
-      // "123 л.с." -> 123
-      if (!powerString) return null;
-      const m = String(powerString).match(/(\\d+(?:[\\.,]\\d+)?)/);
-      if (!m) return null;
-      const n = Number(m[1].replace(',', '.'));
-      return Number.isFinite(n) ? n : null;
-    }
-
-    function parseKmNumber(kmString) {
-      if (!kmString) return null;
-      const n = Number(String(kmString).replace(/\\s/g,'').replace(/[^0-9]/g,''));
-      return Number.isFinite(n) ? n : null;
     }
 
     function renderOptions(c) {
@@ -269,94 +209,32 @@
       });
     }
 
-    function chip(label, onClear) {
-      return `
-        <button class="px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-[10px] font-black uppercase tracking-widest text-slate-600 active:scale-95 transition"
-                onclick="${onClear}">
-          ${label} <span class="ml-1 text-slate-400">✕</span>
-        </button>
-      `;
-    }
+    // --- NEW: hide/show filters ---
+    function toggleFilters(show) {
+      const panel = document.getElementById('filtersPanel');
+      const btn = document.getElementById('filtersToggle');
+      if (!panel || !btn) return;
 
-    function renderChips() {
-      const chipsEl = document.getElementById('chips');
-
-      const brand = document.getElementById('brand').value;
-      const model = document.getElementById('model').value;
-      const year  = document.getElementById('year').value;
-      const power = document.getElementById('power').value;
-      const body  = document.getElementById('body').value;
-
-      const min = Number(pMin.value);
-      const max = Number(pMax.value);
-
-      const chips = [];
-
-      if (brand) chips.push(chip(brand, "document.getElementById('brand').value=''; updateModels();"));
-      if (model) chips.push(chip(model, "document.getElementById('model').value=''; renderChips();"));
-      if (year)  chips.push(chip(`от ${year}`, "document.getElementById('year').value=''; renderChips();"));
-      if (power !== 'any') chips.push(chip(power === 'low' ? 'до 160 л.с.' : '160+ л.с.', "document.getElementById('power').value='any'; renderChips();"));
-      if (body) chips.push(chip(`кузов: ${body}`, "document.getElementById('body').value=''; renderChips();"));
-
-      if (!(min === 1000000 && max === 10000000)) {
-        chips.push(chip(`${(min/1e6).toFixed(1)}–${(max/1e6).toFixed(1)} млн`, "pMin.value=1000000; pMax.value=10000000; document.getElementById('minVal').innerText='1.0 млн'; document.getElementById('maxVal').innerText='10.0 млн'; renderChips();"));
+      if (show) {
+        panel.classList.remove('hidden');
+        btn.classList.add('hidden');
+      } else {
+        panel.classList.add('hidden');
+        btn.classList.remove('hidden');
       }
-
-      chipsEl.innerHTML = chips.join('');
     }
 
-    function showStatus(meta, count) {
-      const bar = document.getElementById('statusBar');
-      const t = document.getElementById('statusText');
-      const w = document.getElementById('warningText');
-
-      bar.classList.remove('hidden');
-
-      const pages = meta?.stats?.pagesTried ?? null;
-      const fetched = meta?.stats?.offersFetched ?? null;
-
-      t.innerText = `Найдено: ${count} • страниц: ${pages ?? '—'} • офферов: ${fetched ?? '—'}`;
-      w.innerText = meta?.warning ? meta.warning : '';
-      if (!meta?.warning) w.classList.add('hidden'); else w.classList.remove('hidden');
-    }
-
-    function buildPowerParams(powerValue) {
-      // Превращаем UI (low/high) в то, что ждёт бэкенд: power_min / power_max
-      // low: <=160, high: >=161
-      if (powerValue === 'low') return { power_max: '160' };
-      if (powerValue === 'high') return { power_min: '161' };
-      return {}; // any
-    }
-
-    function sortCars(cars) {
-      const sort = document.getElementById('sort').value;
-      const arr = [...cars];
-
-      const by = {
-        relevance: () => 0,
-        price_asc: (a,b) => (getTurnkeyTotalNumber(a) ?? 1e18) - (getTurnkeyTotalNumber(b) ?? 1e18),
-        price_desc: (a,b) => (getTurnkeyTotalNumber(b) ?? -1) - (getTurnkeyTotalNumber(a) ?? -1),
-        year_desc: (a,b) => (Number(b.year) || 0) - (Number(a.year) || 0),
-        km_asc: (a,b) => (parseKmNumber(a.km) ?? 1e18) - (parseKmNumber(b.km) ?? 1e18),
-        hp_desc: (a,b) => (parseHpNumber(b.power) ?? -1) - (parseHpNumber(a.power) ?? -1)
-      };
-
-      arr.sort(by[sort] || by.relevance);
-      return arr;
+    function scrollToResults() {
+      const list = document.getElementById('list');
+      if (!list) return;
+      list.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     async function search() {
       const list = document.getElementById('list');
-      const statusBar = document.getElementById('statusBar');
-      statusBar.classList.add('hidden');
+      list.innerHTML = '<div class="text-center py-20 animate-pulse text-slate-300 font-black uppercase text-[10px] tracking-widest">Анализ рынка КНР...</div>';
 
-      list.innerHTML = `
-        <div class="text-center py-20 animate-pulse text-slate-300 font-black uppercase text-[10px] tracking-widest">
-          Анализ рынка КНР...
-        </div>
-      `;
-
-      // user info for logs
+      // user info
       const user = tg?.initDataUnsafe?.user;
       let userInfo = 'Аноним';
       if (user) {
@@ -365,95 +243,70 @@
         userInfo = `${name} (${contact})`;
       }
 
-      const baseParams = {
+      const params = new URLSearchParams({
         mark: document.getElementById('brand').value,
         model: document.getElementById('model').value,
         year: document.getElementById('year').value,
-        body: document.getElementById('body').value,
+        power: document.getElementById('power').value,
         price_min: pMin.value,
         price_max: pMax.value,
-        user: userInfo,
-        // если фильтры жесткие — можно поднять, но по умолчанию ок:
-        max_pages: '8'
-      };
-
-      const powerParams = buildPowerParams(document.getElementById('power').value);
-
-      const params = new URLSearchParams({ ...baseParams, ...powerParams });
+        user: userInfo
+      });
 
       try {
         const res = await fetch('https://plifartorikern.beget.app/webhook/get-cars?' + params.toString());
         const data = await res.json();
 
-        const cars = sortCars(data.cars || []);
-
-        showStatus(data.meta || {}, cars.length);
-
-        list.innerHTML = cars.map(c => {
+        list.innerHTML = (data.cars || []).map(c => {
           const photos = safePhotosFromCar(c);
           const turnkey = getTurnkeyPrice(c);
-          const body = safeText(c.body, '—'); // появится после правки бэка
-
           return `
           <div class="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100">
             <div class="relative">
-              <img src="${c.photo || photos[0]}" class="w-full h-64 object-cover js-main-photo"
-                   data-photos='${escapeForDataAttr(JSON.stringify(photos))}' data-index="0">
+              <img src="${c.photo || photos[0]}" class="w-full h-64 object-cover js-main-photo" data-photos='${escapeForDataAttr(JSON.stringify(photos))}' data-index="0">
               <div class="absolute bottom-3 right-3 flex gap-1.5 bg-black/20 p-1.5 rounded-2xl backdrop-blur-sm">
-                ${photos.slice(0, 5).map((p, idx) => `
-                  <img src="${p}" class="w-10 h-10 rounded-xl border-2 border-white object-cover cursor-pointer js-thumb" data-idx="${idx}">
-                `).join("")}
+                ${photos.slice(0, 5).map((p, idx) => `<img src="${p}" class="w-10 h-10 rounded-xl border-2 border-white object-cover cursor-pointer js-thumb" data-idx="${idx}">`).join("")}
               </div>
             </div>
-
             <div class="p-6">
-              <div class="flex items-start justify-between gap-3 mb-3">
-                <h3 class="font-black uppercase text-xl text-slate-800">${safeText(c.name)}</h3>
-                <span class="shrink-0 text-[10px] font-black uppercase tracking-widest bg-slate-100 border border-slate-200 px-3 py-1 rounded-full text-slate-600">
-                  ${body}
-                </span>
-              </div>
-
+              <h3 class="font-black uppercase text-xl mb-4 text-slate-800">${safeText(c.name)}</h3>
               <div class="space-y-2 text-[13px] font-bold text-slate-500 uppercase mb-6">
-                <div>📍 ПРОБЕГ: <span class="text-slate-900">${safeText(c.km, '—')}</span></div>
-                <div>📅 ГОД: <span class="text-slate-900">${safeText(c.year, '—')} г.</span></div>
-                <div>✅ ДВС: <span class="text-slate-900">${safeText(c.volume, '—')}</span></div>
-                <div>⚙️ МОЩНОСТЬ: <span class="text-slate-900">${safeText(c.power, '—')}</span></div>
-                <div>➕ ПРИВОД: <span class="text-slate-900">${safeText(c.drive, '—')}</span></div>
+                <div>📍 ПРОБЕГ: <span class="text-slate-900">${safeText(c.km)}</span></div>
+                <div>📅 ГОД: <span class="text-slate-900">${safeText(c.year)} г.</span></div>
+                <div>✅ ДВС: <span class="text-slate-900">${safeText(c.volume)}</span></div>
+                <div>⚙️ МОЩНОСТЬ: <span class="text-slate-900">${safeText(c.power)}</span></div>
+                <div>➕ ПРИВОД: <span class="text-slate-900">${safeText(c.drive)}</span></div>
               </div>
-
               <div class="pt-5 border-t border-slate-100">
                 <div class="text-[10px] font-black text-slate-400 uppercase mb-1">Цена под ключ до РФ:</div>
                 <div class="text-3xl font-black text-blue-600 tracking-tighter">${turnkey} ₽</div>
               </div>
-
               <div class="mt-5">
                 <details class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                  <summary class="cursor-pointer font-black text-[10px] uppercase tracking-widest text-slate-700">
-                    Опции / комплектация
-                  </summary>
+                  <summary class="cursor-pointer font-black text-[10px] uppercase tracking-widest text-slate-700">Опции / комплектация</summary>
                   <div class="mt-4">${renderOptions(c)}</div>
                 </details>
               </div>
-
-              <a href="${safeText(c.url, '#')}" target="_blank"
-                 class="block w-full bg-slate-900 text-white text-center py-4 rounded-2xl font-black text-[10px] uppercase mt-5 tracking-widest">
-                Оригинал
-              </a>
+              <a href="${safeText(c.url, '#')}" target="_blank" class="block w-full bg-slate-900 text-white text-center py-4 rounded-2xl font-black text-[10px] uppercase mt-5 tracking-widest">Оригинал</a>
             </div>
           </div>`;
         }).join("") || '<div class="text-center py-20 font-bold text-slate-400">Ничего не найдено</div>';
 
         attachGalleryHandlers();
 
+        // ✅ Сворачиваем фильтры и скроллим к результатам
+        toggleFilters(false);
+        scrollToResults();
+
       } catch (e) {
         list.innerHTML = '<div class="text-center py-20 font-bold text-red-500">Ошибка соединения</div>';
+        // Если ошибка — покажем фильтры обратно
+        toggleFilters(true);
       }
     }
 
     updateModels();
     fillYears(1990);
-    renderChips();
   </script>
 </body>
 </html>
