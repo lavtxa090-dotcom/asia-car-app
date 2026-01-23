@@ -74,41 +74,117 @@
       <div class="grid grid-cols-2 gap-3 mb-4">
         <select id="brand" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none" onchange="updateModels()">
           <option value="">Все марки</option>
-          <option value="AUDI">Audi</option>
-          <option value="VOLKSWAGEN">Volkswagen</option>
-          <option value="TOYOTA">Toyota</option>
-          <option value="HYUNDAI">Hyundai</option>
-          <option value="MAZDA">Mazda</option>
 
-          <option value="BYD">BYD</option>
-          <option value="CHERY">Chery</option>
-          <option value="CHANGAN">Changan</option>
-          <option value="EXEED">Exeed</option>
-          <option value="GAC">GAC</option>
-          <option value="GEELY">Geely</option>
-          <option value="HAVAL">Haval</option>
-          <option value="HONGQI">Hongqi</option>
-          <option value="JAECOO">Jaecoo</option>
-          <option value="JETOUR">Jetour</option>
-          <option value="LEAPMOTOR">Leapmotor</option>
-          <option value="LI AUTO">Li Auto</option>
-          <option value="LYNK &amp; CO">Lynk &amp; Co</option>
-          <option value="NIO">Nio</option>
-          <option value="OMODA">Omoda</option>
-          <option value="TANK">Tank</option>
-          <option value="WEY">Wey</option>
-          <option value="XPENG">Xpeng</option>
-          <option value="XIAOMI">Xiaomi</option>
-          <option value="ZEEKR">Zeekr</option>
+          <!-- A -->
+          <option value="AUDI">Audi</option>
+          <option value="AION">Aion (GAC Aion)</option>
+
+          <!-- B -->
           <option value="BMW">BMW</option>
           <option value="MERCEDES-BENZ">Mercedes-Benz</option>
-          <option value="HONDA">Honda</option>
-          <option value="NISSAN">Nissan</option>
-          <option value="LEXUS">Lexus</option>
-          <option value="TESLA">Tesla</option>
+          <option value="BENTLEY">Bentley</option>
           <option value="BUICK">Buick</option>
+          <option value="BYD">BYD</option>
+          <option value="PORSCHE">Porsche</option>
+          <option value="BESTUNE">Bestune (FAW)</option>
+          <option value="BAOJUN">Baojun</option>
+          <option value="PEUGEOT">Peugeot</option>
+          <option value="BAIC">BAIC</option>
+          <option value="BORGWARD">Borgward</option>
+
+          <!-- C -->
+          <option value="CHANGAN">Changan</option>
+          <option value="GREAT WALL">Great Wall</option>
+          <option value="CHERY">Chery</option>
+          <option value="CHEVROLET">Chevrolet</option>
+          <option value="CITROEN">Citroën</option>
           <option value="CADILLAC">Cadillac</option>
+
+          <!-- D -->
+          <option value="VOLKSWAGEN">Volkswagen</option>
+          <option value="DONGFENG">Dongfeng</option>
+          <option value="DS">DS</option>
+          <option value="DACIA">Dacia</option>
+
+          <!-- F -->
+          <option value="TOYOTA">Toyota</option>
+          <option value="FORD">Ford</option>
+          <option value="FIAT">Fiat</option>
+          <option value="FOTON">Foton</option>
+
+          <!-- G -->
+          <option value="GAC">GAC Trumpchi</option>
+          <option value="GEELY">Geely</option>
+          <option value="ZEEKR">Zeekr</option>
+          <option value="GENESIS">Genesis</option>
+          <option value="GMC">GMC</option>
+
+          <!-- H -->
+          <option value="HAVAL">Haval</option>
+          <option value="HONGQI">Hongqi</option>
+          <option value="HAIMA">Haima</option>
+          <option value="HUMMER">Hummer</option>
+          <option value="HIPHI">HiPhi</option>
+
+          <!-- J -->
+          <option value="JAGUAR">Jaguar</option>
+          <option value="JETOUR">Jetour</option>
+          <option value="JEEP">Jeep</option>
+          <option value="JAC">JAC</option>
+          <option value="JMC">JMC</option>
+
+          <!-- K -->
+          <option value="KIA">Kia</option>
+
+          <!-- L -->
+          <option value="LEXUS">Lexus</option>
+          <option value="LI AUTO">Li Auto</option>
+          <option value="LYNK &amp; CO">Lynk &amp; Co</option>
+
+          <!-- M -->
+          <option value="MAZDA">Mazda</option>
+          <option value="MG">MG</option>
+          <option value="MINI">MINI</option>
+
+          <!-- N -->
+          <option value="NISSAN">Nissan</option>
+          <option value="NIO">NIO</option>
+
+          <!-- O -->
+          <option value="ORA">ORA</option>
+          <option value="OPEL">Opel</option>
+          <option value="ACURA">Acura</option>
+
+          <!-- R -->
+          <option value="RENAULT">Renault</option>
+          <option value="ROEWE">Roewe</option>
+          <option value="RAM">RAM</option>
+          <option value="RIMAC">Rimac</option>
+
+          <!-- S -->
+          <option value="SKODA">Škoda</option>
           <option value="SUBARU">Subaru</option>
+          <option value="SUZUKI">Suzuki</option>
+          <option value="SMART">Smart</option>
+
+          <!-- T -->
+          <option value="TANK">Tank</option>
+
+          <!-- V -->
+          <option value="VOLVO">Volvo</option>
+
+          <!-- W -->
+          <option value="WULING">Wuling</option>
+          <option value="WM MOTOR">WM Motor</option>
+
+          <!-- X -->
+          <option value="XPENG">XPeng</option>
+          <option value="XIAOMI">Xiaomi Auto</option>
+
+          <!-- Existing you had but not in list (keep if needed) -->
+          <option value="HONDA">Honda</option>
+          <option value="TESLA">Tesla</option>
+          <option value="SUBARU_OLD">Subaru (old)</option>
         </select>
 
         <select id="model" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
@@ -167,13 +243,115 @@
     const tg = window.Telegram?.WebApp;
     if (tg) { tg.ready(); tg.expand(); }
 
-    // ===== Models =====
+    // ===== Full brand->models mapping (EN, для фильтра) =====
+    // Важно: value у option модели — UPPERCASE (как раньше), backend уже умеет маппить (англ->кит) для части моделей.
+    // По мере надобности дополним маппингом на backend (MODEL_TO_API_MAP).
     const modelsData = {
-      "VOLKSWAGEN": ["Passat", "Magotan", "Sagitar", "Tayron", "Teramont", "ID.4", "Touareg"],
-      "AUDI": ["A4L", "A6L", "Q3", "Q5L", "Q7", "Q8"],
-      "TOYOTA": ["Camry", "RAV4", "Highlander", "Corolla"],
-      "HYUNDAI": ["Elantra", "Sonata", "Tucson", "Santa Fe", "Palisade"],
-      "MAZDA": ["Mazda3", "Mazda6", "CX-5", "CX-50", "CX-9"]
+      // A
+      "AUDI": ["A1","A3","A3 SPORTBACK","A4","A4L","A5","A5L","A6","A6L","A7","Q2L","Q3","Q3 SPORTBACK","Q5","Q5L","Q7","Q8","E-TRON"],
+      "AION": ["AION S","AION Y","AION V","AION LX"],
+
+      // B
+      "BMW": ["1 SERIES","2 SERIES","3 SERIES","4 SERIES","5 SERIES","7 SERIES","X1","X2","X3","X4","X5","X6","X7","I3","I4","I5","I7","IX1","IX3","IX","M3","M4","X5 M","XM"],
+      "MERCEDES-BENZ": ["A-CLASS","B-CLASS","C-CLASS","E-CLASS","S-CLASS","CLA","CLS","GLA","GLB","GLC","GLE","GLS","G-CLASS","V-CLASS","EQA","EQB","EQC","EQE","EQS","EQE SUV","EQS SUV"],
+      "BENTLEY": ["CONTINENTAL GT","FLYING SPUR","BENTAYGA"],
+      "BUICK": ["EXCELLE GT","REGAL","LACROSSE","ENVISION","ENVISION PLUS","ENCLAVE","GL8"],
+      "BYD": ["QIN PLUS DM","QIN PLUS EV","QIN L DM","HAN DM","HAN EV","TANG DM","TANG EV","SONG PRO DM","SONG PLUS DM","SONG PLUS EV","SONG L","SONG L DM","YUAN PLUS","DOLPHIN","SEAGULL","SEAL","SEAL 06 DM"],
+      "PORSCHE": ["MACAN","CAYENNE","PANAMERA","TAYCAN","911"],
+      "BESTUNE": ["B70","T55","T77","T99"],
+      "BAOJUN": ["510","530","730","RS-3","RS-5","KIWI EV"],
+      "PEUGEOT": ["2008","3008","4008","408","508L"],
+      "BAIC": ["BJ40","BJ60","BJ80"],
+      "BORGWARD": ["BX5","BX7"],
+
+      // C
+      "CHANGAN": ["EADO","YIDA","UNI-V","UNI-T","UNI-K","CS35 PLUS","CS55 PLUS","CS75 PLUS","X5 PLUS","X7 PLUS"],
+      "GREAT WALL": ["CANNON","POER","WINGLE"],
+      "CHERY": ["TIGGO 7","TIGGO 8","TIGGO 9","ARRIZO 5","ARRIZO 8"],
+      "CHEVROLET": ["CRUZE","MALIBU XL","EQUINOX"],
+      "CITROEN": ["C5 X","C5 AIRCROSS","C6"],
+      "CADILLAC": ["CT4","CT5","CT6","XT4","XT5","XT6","LYRIQ"],
+
+      // D
+      "VOLKSWAGEN": ["POLO","POLO PLUS","LAVIDA","LAMANDO","SAGITAR","BORA","PASSAT","MAGOTAN","TIGUAN L","TAYRON","TERAMONT","ID.3","ID.4","ID.6","TOUAREG"],
+      "DONGFENG": ["AEOLUS YIXUAN","AX7","FENGXING"],
+      "DS": ["DS 7","DS 9"],
+      "DACIA": ["DUSTER"],
+
+      // F
+      "TOYOTA": ["COROLLA","LEVIN","CAMRY","AVALON","RAV4","COROLLA CROSS","HIGHLANDER","WILDLANDER","SIENNA","CROWN"],
+      "FORD": ["FOCUS","MONDEO","EDGE","EXPLORER"],
+      "FIAT": ["VIAGGIO","OTTIMO"],
+      "FOTON": ["TUNLAND"],
+
+      // G
+      "GAC": ["GS3","GS4","GS8","M6","M8"],
+      "GEELY": ["EMGRAND","BINRUI","XINGRUI","BOYUE","BOYUE L","XINGYUE L"],
+      "ZEEKR": ["001","009","X","007"],
+      "GENESIS": ["G70","G80","G90","GV70","GV80"],
+      "GMC": ["YUKON","SIERRA"],
+
+      // H
+      "HAVAL": ["H6","BIG DOG","SECOND GEN BIG DOG","F7","F7X","H9"],
+      "HONGQI": ["H5","H9","HS5","HS7","E-HS9"],
+      "HAIMA": ["7X"],
+      "HUMMER": ["H2","H3","HUMMER EV"],
+      "HIPHI": ["HIPHI X","HIPHI Z","HIPHI Y"],
+
+      // J
+      "JAGUAR": ["XEL","XFL","F-PACE","E-PACE"],
+      "JETOUR": ["X70","X90","DASHENG"],
+      "JEEP": ["COMPASS","CHEROKEE","WRANGLER","GRAND CHEROKEE"],
+      "JAC": ["REFINE","S3","S4","S7"],
+      "JMC": ["YUSHENG S350"],
+
+      // K
+      "KIA": ["K3","K5","KX3","SPORTAGE","SORENTO"],
+
+      // L
+      "LEXUS": ["ES","NX","RX","UX","LS"],
+      "LI AUTO": ["L6","L7","L8","L9","MEGA"],
+      "LYNK & CO": ["01","02","03","05","06","07","08","09"],
+
+      // M
+      "MAZDA": ["MAZDA3","MAZDA6","CX-5","CX-30","CX-50","CX-9"],
+      "MG": ["MG5","MG6","MG4 EV","MG7"],
+      "MINI": ["3-DOOR","5-DOOR","COUNTRYMAN","CLUBMAN"],
+
+      // N
+      "NISSAN": ["SYLPHY","ALTIMA","QASHQAI","X-TRAIL","MURANO"],
+      "NIO": ["ES6","ES7","ES8","EC6","EC7","ET5","ET5T","ET7"],
+
+      // O
+      "ORA": ["GOOD CAT","LIGHTNING CAT","BALLET CAT"],
+      "OPEL": ["INSIGNIA"],
+      "ACURA": ["CDX","RDX","MDX"],
+
+      // R
+      "RENAULT": ["KOLEOS","CAPTUR"],
+      "ROEWE": ["I5","I6","RX5","RX8"],
+      "RAM": ["RAM 1500","RAM 2500"],
+      "RIMAC": ["NEVERA"],
+
+      // S
+      "SKODA": ["OCTAVIA","SUPERB","KODIAQ","KAROQ"],
+      "SUBARU": ["FORESTER","OUTBACK","CROSSTREK"],
+      "SUZUKI": ["VITARA"],
+      "SMART": ["SMART #1","SMART #3"],
+
+      // T
+      "TANK": ["300","400","500","700"],
+
+      // V
+      "VOLVO": ["S60","S90","XC40","XC60","XC90","EX30","EX90"],
+
+      // W
+      "WULING": ["HONGGUANG MINI EV","BINGUO"],
+      "WM MOTOR": ["EX5","W6","E5"],
+
+      // X
+      "XPENG": ["G3","P5","P7","P7I","G6","G9","X9"],
+      "XIAOMI": ["SU7"]
     };
 
     function updateModels() {
@@ -215,7 +393,7 @@
     let lastQueryKey = '';
     let isLoading = false;
 
-    // ✅ Load-more state (делаем “умно”: просим больше на сервере через target_count)
+    // ✅ Load-more state
     const PAGE_SIZE = 20;
     let desiredCount = PAGE_SIZE;
     let hasMore = true;
@@ -300,7 +478,7 @@
       `;
     }
 
-    // ✅ Lazy-load image helper: ставим src из data-src только когда видно
+    // ✅ Lazy-load image helper
     let io = null;
     function ensureIO(){
       if (io) return;
@@ -334,7 +512,6 @@
           const photos = JSON.parse(main.dataset.photos || '[]');
           const nextUrl = photos[idx];
 
-          // если main ещё не загружен (lazy) — просто ставим src
           main.setAttribute('data-src', nextUrl);
           hookLazyImages();
         };
@@ -406,8 +583,6 @@
         user: getUserInfoForLogs(),
       });
 
-      // ✅ Просим сервер вернуть больше, если он умеет:
-      // если backend пока игнорит — ничего страшного, просто будет 20.
       params.set('target_count', String(count));
       params.set('page_size', String(PAGE_SIZE));
       params.set('client', 'webapp');
@@ -476,7 +651,6 @@
       const loadMoreWrap = document.getElementById('loadMoreWrap');
       const loadMoreHint = document.getElementById('loadMoreHint');
 
-      // показываем skeletons
       if (!append) showSkeletons({ replace: true });
       else {
         loadMoreHint.classList.remove('hidden');
@@ -486,7 +660,6 @@
       try {
         const qk = queryKeyFromUI();
         if (!append || qk !== lastQueryKey) {
-          // новый запрос — сбрасываем
           lastQueryKey = qk;
           desiredCount = PAGE_SIZE;
           hasMore = true;
@@ -498,11 +671,9 @@
         const data = await res.json();
         const rawCars = Array.isArray(data?.cars) ? data.cars : [];
 
-        // ✅ если сервер вернул меньше/не увеличивается — больше грузить нечего
         if (rawCars.length < desiredCount) hasMore = false;
 
         if (!landing) {
-          // merge unique (на случай если сервер возвращает те же)
           const map = new Map(lastCars.map(c => [carId(c), c]));
           rawCars.forEach(c => map.set(carId(c), c));
           lastCars = Array.from(map.values());
@@ -512,7 +683,6 @@
           return;
         }
 
-        // landing фильтрация как раньше
         let carsStrict = rawCars.filter(c => {
           const b = detectBrand(c?.name);
           if (!b || !LANDING_ALLOWED.has(b)) return false;
@@ -602,7 +772,6 @@
 
       const title = safeText(c?.name, '').trim() || 'Автомобиль';
 
-      // ✅ Картинки: lazy (data-src) + async decode
       const mainPhoto = c.photo || photos[0] || '';
       const thumbs = photos.slice(0, 5);
 
@@ -711,7 +880,6 @@
 
     document.getElementById('btnApply').onclick = async () => {
       setTab('all');
-      // новый поиск
       desiredCount = PAGE_SIZE;
       hasMore = true;
       await fetchCars({ landing: false, append: false });
@@ -725,10 +893,9 @@
       await fetchCars({ landing: true, append: false });
     };
 
-    // ✅ Load more button
     document.getElementById('btnLoadMore').onclick = async () => {
       if (!hasMore || isLoading) return;
-      desiredCount += PAGE_SIZE;               // просим больше
+      desiredCount += PAGE_SIZE;
       await fetchCars({ landing: false, append: true });
     };
 
@@ -738,7 +905,6 @@
     syncPriceLabels();
     resetFiltersToLanding();
 
-    // стартовая лента
     fetchCars({ landing: true, append: false });
   </script>
 </body>
