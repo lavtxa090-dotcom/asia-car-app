@@ -8,45 +8,25 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
-    /* Авто-тематичный фон: градиент + легкий SVG-паттерн + "дорога" */
-    :root{
-      --bg1: #0b1220;
-      --bg2: #0b2a4a;
-      --bg3: #0f172a;
-    }
+    /* Мягкий авто-фон: светлый, не убивает читаемость */
     body{
       min-height: 100vh;
       background:
-        radial-gradient(1200px 600px at 20% -10%, rgba(59,130,246,0.35), transparent 60%),
-        radial-gradient(1000px 600px at 90% 10%, rgba(34,197,94,0.18), transparent 55%),
-        radial-gradient(800px 500px at 50% 120%, rgba(255,255,255,0.08), transparent 55%),
-        linear-gradient(180deg, var(--bg1), var(--bg2) 40%, var(--bg3));
-      position: relative;
+        radial-gradient(900px 500px at 20% 0%, rgba(59,130,246,.10), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(16,185,129,.10), transparent 55%),
+        linear-gradient(180deg, #f8fafc, #eef2ff 35%, #f8fafc 100%);
       overflow-x: hidden;
+      position: relative;
     }
     body::before{
       content:"";
       position: fixed;
       inset: 0;
       pointer-events: none;
-      opacity: .18;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420' viewBox='0 0 420 420'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.35'%3E%3Cpath d='M70 260c40-58 88-88 140-88s100 30 140 88' stroke-width='3'/%3E%3Cpath d='M110 260c0-12 10-22 22-22s22 10 22 22-10 22-22 22-22-10-22-22Z'/%3E%3Cpath d='M244 260c0-12 10-22 22-22s22 10 22 22-10 22-22 22-22-10-22-22Z'/%3E%3Cpath d='M130 220h160' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M150 200c18-22 40-34 60-34s42 12 60 34' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M40 320h340' stroke-width='2' stroke-dasharray='10 14'/%3E%3C/g%3E%3C/svg%3E");
+      opacity: .07; /* очень слабый паттерн */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='520' viewBox='0 0 520 520'%3E%3Cg fill='none' stroke='%230b1220' stroke-opacity='0.65'%3E%3Cpath d='M110 330c46-70 102-106 150-106s104 36 150 106' stroke-width='3'/%3E%3Cpath d='M156 330c0-14 12-26 26-26s26 12 26 26-12 26-26 26-26-12-26-26Z'/%3E%3Cpath d='M312 330c0-14 12-26 26-26s26 12 26 26-12 26-26 26-26-12-26-26Z'/%3E%3Cpath d='M180 278h180' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M206 252c22-28 48-42 74-42s52 14 74 42' stroke-width='3' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E");
       background-repeat: repeat;
-      background-size: 380px 380px;
-      filter: blur(0.2px);
-    }
-    body::after{
-      content:"";
-      position: fixed;
-      left: 0; right: 0; bottom: 0;
-      height: 180px;
-      pointer-events: none;
-      background:
-        linear-gradient(180deg, transparent, rgba(0,0,0,0.55)),
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.16) 0 14px, transparent 14px 38px);
-      opacity: .35;
-      transform: skewY(-2deg);
-      transform-origin: bottom;
+      background-size: 520px 520px;
     }
   </style>
 </head>
@@ -54,33 +34,38 @@
 <body class="text-slate-900 font-sans">
   <div class="max-w-md mx-auto p-4">
     <header class="flex justify-between items-center mb-4">
-      <h1 class="text-2xl font-black text-white italic uppercase tracking-tighter drop-shadow">AsiaCar</h1>
-      <div class="text-[10px] font-bold bg-white/10 border border-white/10 px-3 py-1 rounded-full shadow-sm text-white/70 backdrop-blur">
+      <h1 class="text-2xl font-black text-blue-600 italic uppercase tracking-tighter">AsiaCar</h1>
+      <div class="text-[10px] font-bold bg-white border border-slate-200 px-3 py-1 rounded-full shadow-sm text-slate-400">
         PRO SYSTEM
       </div>
     </header>
 
     <!-- Tabs -->
-    <div class="bg-white/85 backdrop-blur rounded-2xl p-2 shadow-sm border border-white/30 mb-4 sticky top-2 z-30">
+    <div class="bg-white rounded-2xl p-2 shadow-sm border border-slate-100 mb-4 sticky top-2 z-30">
       <div class="grid grid-cols-3 gap-2">
         <button id="tabAll" class="py-3 rounded-xl font-black text-[10px] uppercase tracking-widest bg-slate-900 text-white">Все</button>
         <button id="tabFav" class="py-3 rounded-xl font-black text-[10px] uppercase tracking-widest bg-slate-100 text-slate-700">Избранные</button>
         <button id="toggleFilters" class="py-3 rounded-xl font-black text-[10px] uppercase tracking-widest bg-blue-600 text-white">Фильтры</button>
       </div>
 
-      <!-- "умолчания" на первой странице -->
       <div class="mt-2 flex flex-wrap gap-2 px-1">
-        <span id="defaultBadge" class="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-blue-600/10 text-blue-700 border border-blue-600/20">
-          По умолчанию: 2022+ • 100–160 л.с. • VW/Audi/Toyota/Hyundai/Mazda
+        <span class="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-blue-600/10 text-blue-700 border border-blue-600/20">
+          Старт: 2022+ • 100–160 л.с. • VW/Audi/Toyota/Hyundai/Mazda
         </span>
       </div>
     </div>
 
     <!-- Filters (collapsible) -->
-    <div id="filtersWrap" class="bg-white/90 backdrop-blur rounded-[2.5rem] p-6 shadow-xl border border-white/30 mb-6 hidden">
+    <div id="filtersWrap" class="bg-white rounded-[2.5rem] p-6 shadow-xl border border-slate-100 mb-6 hidden">
       <div class="grid grid-cols-2 gap-3 mb-4">
         <select id="brand" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none" onchange="updateModels()">
           <option value="">Все марки</option>
+          <option value="AUDI">Audi</option>
+          <option value="VOLKSWAGEN">Volkswagen</option>
+          <option value="TOYOTA">Toyota</option>
+          <option value="HYUNDAI">Hyundai</option>
+          <option value="MAZDA">Mazda</option>
+
           <option value="BYD">BYD</option>
           <option value="CHERY">Chery</option>
           <option value="CHANGAN">Changan</option>
@@ -101,20 +86,15 @@
           <option value="XPENG">Xpeng</option>
           <option value="XIAOMI">Xiaomi</option>
           <option value="ZEEKR">Zeekr</option>
-          <option value="AUDI">Audi</option>
           <option value="BMW">BMW</option>
           <option value="MERCEDES-BENZ">Mercedes-Benz</option>
-          <option value="VOLKSWAGEN">Volkswagen</option>
           <option value="HONDA">Honda</option>
           <option value="NISSAN">Nissan</option>
-          <option value="TOYOTA">Toyota</option>
           <option value="LEXUS">Lexus</option>
           <option value="TESLA">Tesla</option>
           <option value="BUICK">Buick</option>
           <option value="CADILLAC">Cadillac</option>
           <option value="SUBARU">Subaru</option>
-          <option value="HYUNDAI">Hyundai</option>
-          <option value="MAZDA">Mazda</option>
         </select>
 
         <select id="model" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none">
@@ -151,10 +131,6 @@
           Сброс
         </button>
       </div>
-
-      <div class="mt-4 text-[11px] font-bold text-slate-500">
-        Подсказка: стартовая лента — 2022+ и 100–160 л.с. по VW/Audi/Toyota/Hyundai/Mazda. Любые фильтры можно изменить.
-      </div>
     </div>
 
     <!-- List -->
@@ -168,11 +144,9 @@
 
     // ===== Models =====
     const modelsData = {
-      "GEELY": ["Monjaro", "Tugella", "Coolray", "Preface", "Okavango", "Emgrand"],
-      "BYD": ["Han", "Tang", "Seal", "Dolphin"],
-      "TOYOTA": ["Camry", "RAV4", "Highlander", "Corolla"],
       "VOLKSWAGEN": ["Passat", "Magotan", "Sagitar", "Tayron", "Teramont", "ID.4", "Touareg"],
       "AUDI": ["A4L", "A6L", "Q3", "Q5L", "Q7", "Q8"],
+      "TOYOTA": ["Camry", "RAV4", "Highlander", "Corolla"],
       "HYUNDAI": ["Elantra", "Sonata", "Tucson", "Santa Fe", "Palisade"],
       "MAZDA": ["Mazda3", "Mazda6", "CX-5", "CX-50", "CX-9"]
     };
@@ -316,31 +290,30 @@
       });
     }
 
-    // ===== Default landing rules (первая страница) =====
-    const LANDING_ALLOWED_BRANDS = ['VOLKSWAGEN','AUDI','TOYOTA','HYUNDAI','MAZDA'];
-    const LANDING_POWER_MIN = 100;
-    const LANDING_POWER_MAX = 160;
+    // ===== Default landing rules =====
+    const LANDING_ALLOWED = new Set(['VOLKSWAGEN','AUDI','TOYOTA','HYUNDAI','MAZDA']);
+    const LANDING_HP_MIN = 100;
+    const LANDING_HP_MAX = 160;
     const LANDING_YEAR_FROM = 2022;
 
     function extractHP(powerStr) {
-      // "150 л.с." -> 150
       if (!powerStr) return null;
-      const m = String(powerStr).match(/(\d+)/);
+      const m = String(powerStr).match(/(\d{2,3})/);
       return m ? Number(m[1]) : null;
     }
 
-    function brandFromName(name) {
+    function detectBrand(name) {
       const n = String(name || '').trim().toUpperCase();
-      // простая эвристика по началу названия
-      if (n.startsWith('VOLKSWAGEN') || n.startsWith('VW ')) return 'VOLKSWAGEN';
-      if (n.startsWith('AUDI')) return 'AUDI';
-      if (n.startsWith('TOYOTA')) return 'TOYOTA';
-      if (n.startsWith('HYUNDAI')) return 'HYUNDAI';
-      if (n.startsWith('MAZDA')) return 'MAZDA';
+      // Делаем более “прощающе”: не только startsWith, но и includes
+      if (n.includes('VOLKSWAGEN') || n.includes('VW')) return 'VOLKSWAGEN';
+      if (n.includes('AUDI')) return 'AUDI';
+      if (n.includes('TOYOTA')) return 'TOYOTA';
+      if (n.includes('HYUNDAI')) return 'HYUNDAI';
+      if (n.includes('MAZDA')) return 'MAZDA';
       return null;
     }
 
-    // ===== Filters get/set =====
+    // ===== Filters build =====
     function getUserInfoForLogs() {
       const user = tg?.initDataUnsafe?.user;
       let userInfo = 'Аноним';
@@ -356,11 +329,9 @@
       const brand = document.getElementById('brand').value;
       const model = document.getElementById('model').value;
 
-      // default: год от 2022
       const yearVal = document.getElementById('year').value;
       const year = yearVal || String(LANDING_YEAR_FROM);
 
-      // power: low/high -> translate to power_min/max
       const power = document.getElementById('power').value;
       let power_min = '';
       let power_max = '';
@@ -382,13 +353,12 @@
       return params;
     }
 
-    function resetFiltersToDefaultLanding() {
-      document.getElementById('brand').value = ''; // оставляем пустым (получаем больше данных), а отфильтруем на фронте
+    function resetFiltersToLanding() {
+      document.getElementById('brand').value = '';
       updateModels();
       document.getElementById('model').value = '';
       document.getElementById('year').value = String(LANDING_YEAR_FROM);
-      document.getElementById('power').value = ''; // не low/high — зададим точный диапазон 100–160 на фронте
-
+      document.getElementById('power').value = '';
       pMin.value = 1000000;
       pMax.value = 10000000;
       syncPriceLabels();
@@ -397,41 +367,54 @@
     // ===== Data fetch =====
     async function fetchCars({ landing = false } = {}) {
       const list = document.getElementById('list');
-      list.innerHTML = '<div class="text-center py-16 animate-pulse text-white/70 font-black uppercase text-[10px] tracking-widest">Загружаю свежие предложения...</div>';
+      list.innerHTML = '<div class="text-center py-16 animate-pulse text-slate-400 font-black uppercase text-[10px] tracking-widest">Загружаю предложения...</div>';
 
       try {
         const params = buildParams();
-
-        // При старте: просим год 2022+ (и ценовой диапазон), а бренд+hp фильтруем на фронте,
-        // чтобы не упереться в ограничения "один бренд в запросе".
-        if (landing) {
-          params.set('year', String(LANDING_YEAR_FROM));
-        }
+        if (landing) params.set('year', String(LANDING_YEAR_FROM));
 
         const res = await fetch(API_URL + '?' + params.toString());
         const data = await res.json();
 
-        let cars = Array.isArray(data?.cars) ? data.cars : [];
+        const rawCars = Array.isArray(data?.cars) ? data.cars : [];
 
-        if (landing) {
-          cars = cars.filter(c => {
-            const b = brandFromName(c?.name);
-            if (!b) return false;
-            if (!LANDING_ALLOWED_BRANDS.includes(b)) return false;
-
-            const hp = extractHP(c?.power);
-            if (hp === null) return false; // на стартовой ленте хотим строго 100-160
-            return hp >= LANDING_POWER_MIN && hp <= LANDING_POWER_MAX;
-          });
+        if (!landing) {
+          lastCars = rawCars;
+          render();
+          document.getElementById('filtersWrap').classList.add('hidden');
+          return;
         }
 
-        lastCars = cars;
-        render();
+        // 1) Строго: бренд + HP 100–160 (и HP должен быть определён)
+        let carsStrict = rawCars.filter(c => {
+          const b = detectBrand(c?.name);
+          if (!b || !LANDING_ALLOWED.has(b)) return false;
+          const hp = extractHP(c?.power);
+          if (hp === null) return false;
+          return hp >= LANDING_HP_MIN && hp <= LANDING_HP_MAX;
+        });
 
-        // авто-сворачиваем фильтры после поиска
+        // 2) Если мало — ослабляем: бренд + (HP 100–160 ИЛИ HP неизвестно)
+        let carsSoft = rawCars.filter(c => {
+          const b = detectBrand(c?.name);
+          if (!b || !LANDING_ALLOWED.has(b)) return false;
+          const hp = extractHP(c?.power);
+          if (hp === null) return true;
+          return hp >= LANDING_HP_MIN && hp <= LANDING_HP_MAX;
+        });
+
+        // 3) Если совсем мало — показываем просто свежие 2022+ без бренд-фильтра (чтобы не было пусто)
+        let carsFallback = rawCars;
+
+        lastCars = (carsStrict.length >= 6) ? carsStrict
+                 : (carsSoft.length >= 6) ? carsSoft
+                 : carsFallback;
+
+        render();
         document.getElementById('filtersWrap').classList.add('hidden');
+
       } catch (e) {
-        list.innerHTML = '<div class="text-center py-16 font-bold text-white/80">Ошибка соединения</div>';
+        list.innerHTML = '<div class="text-center py-16 font-bold text-slate-400">Ошибка соединения</div>';
       }
     }
 
@@ -443,9 +426,9 @@
         const favCars = getFavCars();
         if (!favCars.length) {
           list.innerHTML = `
-            <div class="bg-white/90 backdrop-blur rounded-[2.5rem] p-8 shadow-sm border border-white/30">
-              <div class="font-black uppercase text-slate-800 mb-2">Избранных пока нет</div>
-              <div class="text-sm text-slate-600 font-bold">Нажимай ❤️ на карточках — и они появятся здесь.</div>
+            <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
+              <div class="font-black uppercase text-slate-700 mb-2">Избранных пока нет</div>
+              <div class="text-sm text-slate-500 font-bold">Нажимай ❤️ на карточках — и они появятся здесь.</div>
             </div>
           `;
           return;
@@ -456,12 +439,7 @@
       }
 
       if (!lastCars.length) {
-        list.innerHTML = `
-          <div class="bg-white/90 backdrop-blur rounded-[2.5rem] p-8 shadow-sm border border-white/30">
-            <div class="font-black uppercase text-slate-800 mb-2">Ничего не найдено</div>
-            <div class="text-sm text-slate-600 font-bold">Попробуй открыть фильтры и ослабить условия.</div>
-          </div>
-        `;
+        list.innerHTML = '<div class="text-center py-16 font-bold text-slate-400">Ничего не найдено</div>';
         return;
       }
 
@@ -474,24 +452,36 @@
       const turnkey = getTurnkeyPrice(c);
       const liked = isFav(c);
 
+      // если name пустой или без модели — подстрахуемся
+      const title = safeText(c?.name, '').trim() || 'Автомобиль';
+      const looksLikeOnlyBrand = /^[A-Za-z\-]+$/.test(title.replace(/\s+/g,''));
+      const titleHint = looksLikeOnlyBrand ? ' (модель не передалась из источника)' : '';
+
       return `
-      <div class="bg-white/92 backdrop-blur rounded-[2.5rem] overflow-hidden shadow-sm border border-white/30">
+      <div class="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100">
         <div class="relative">
           <img src="${c.photo || photos[0]}" class="w-full h-64 object-cover js-main-photo" data-photos='${escapeForDataAttr(JSON.stringify(photos))}' data-index="0">
 
-          <button class="js-like absolute top-4 right-4 w-12 h-12 rounded-2xl backdrop-blur bg-white/80 border border-white shadow-lg flex items-center justify-center active:scale-95 transition"
+          <!-- overlay to make text readable -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent pointer-events-none"></div>
+
+          <button class="js-like absolute top-4 right-4 w-12 h-12 rounded-2xl backdrop-blur bg-white/85 border border-white shadow-lg flex items-center justify-center active:scale-95 transition"
                   data-idx="${idx}" aria-label="Нравится">
             <span class="text-2xl">${liked ? '❤️' : '🤍'}</span>
           </button>
 
-          <div class="absolute bottom-3 right-3 flex gap-1.5 bg-black/20 p-1.5 rounded-2xl backdrop-blur-sm">
+          <div class="absolute bottom-4 left-5 right-5">
+            <div class="text-white font-black uppercase text-lg leading-tight drop-shadow">
+              ${title}${titleHint ? `<span class="text-white/80 text-[10px] font-bold normal-case"> ${titleHint}</span>` : ''}
+            </div>
+          </div>
+
+          <div class="absolute bottom-3 right-3 flex gap-1.5 bg-black/25 p-1.5 rounded-2xl backdrop-blur-sm">
             ${photos.slice(0, 5).map((p, tIdx) => `<img src="${p}" class="w-10 h-10 rounded-xl border-2 border-white object-cover cursor-pointer js-thumb" data-idx="${tIdx}">`).join("")}
           </div>
         </div>
 
         <div class="p-6">
-          <h3 class="font-black uppercase text-xl mb-4 text-slate-800">${safeText(c.name)}</h3>
-
           <div class="space-y-2 text-[13px] font-bold text-slate-500 uppercase mb-6">
             <div>📍 ПРОБЕГ: <span class="text-slate-900">${safeText(c.km)}</span></div>
             <div>📅 ГОД: <span class="text-slate-900">${safeText(c.year)} г.</span></div>
@@ -554,31 +544,28 @@
     document.getElementById('tabFav').onclick = () => setTab('fav');
 
     document.getElementById('toggleFilters').onclick = () => {
-      const wrap = document.getElementById('filtersWrap');
-      wrap.classList.toggle('hidden');
+      document.getElementById('filtersWrap').classList.toggle('hidden');
     };
 
     document.getElementById('btnApply').onclick = async () => {
       setTab('all');
-      // При ручном поиске — показываем результат "как есть" (без стартового пресета)
       await fetchCars({ landing: false });
     };
 
     document.getElementById('btnReset').onclick = async () => {
-      resetFiltersToDefaultLanding();
+      resetFiltersToLanding();
       setTab('all');
       await fetchCars({ landing: true });
     };
 
-    // ===== Init defaults =====
+    // ===== Init =====
     updateModels();
     fillYears(1990);
     syncPriceLabels();
 
-    // стартовые настройки (год 2022+)
-    resetFiltersToDefaultLanding();
+    resetFiltersToLanding();
 
-    // автозагрузка стартовой ленты (VW/Audi/Toyota/Hyundai/Mazda, 100-160hp)
+    // стартовая лента: никогда не будет пустой (есть fallback)
     fetchCars({ landing: true });
   </script>
 </body>
