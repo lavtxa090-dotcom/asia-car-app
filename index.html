@@ -311,23 +311,18 @@
       return null;
     }
 
-    // ✅ КЛЮЧЕВОЕ: правильный заголовок (чтобы модель не пропадала)
+    // ✅ правильный заголовок под фото (mark+model -> name -> title)
     function buildCardTitle(c) {
       const mk = safeText(c?.mark, '').trim();
       const mdl = safeText(c?.model, '').trim();
-
-      // 1) если бек отдаёт mark/model — это лучше всего
       if (mk && mdl) return `${mk} ${mdl}`.trim();
 
-      // 2) если в name уже есть и марка и модель
       const nm = safeText(c?.name, '').trim();
       if (nm && nm.split(/\s+/).length >= 2) return nm;
 
-      // 3) если name только марка — берём title (часто там модель/комплектация)
       const ttl = safeText(c?.title, '').trim();
       if (ttl) return `${nm || 'Авто'} — ${ttl}`;
 
-      // 4) последнее
       return nm || 'Автомобиль';
     }
 
@@ -462,6 +457,7 @@
       attachGalleryHandlers();
     }
 
+    // ✅ Заголовок теперь под фото, на фото ничего нет
     function renderCard(c, idx, inFavTab) {
       const photos = safePhotosFromCar(c);
       const turnkey = getTurnkeyPrice(c);
@@ -474,33 +470,29 @@
         <div class="relative">
           <img src="${c.photo || photos[0]}" class="w-full h-64 object-cover js-main-photo" data-photos='${escapeForDataAttr(JSON.stringify(photos))}' data-index="0">
 
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/12 to-transparent pointer-events-none"></div>
-
           <button class="js-like absolute top-4 right-4 w-12 h-12 rounded-2xl backdrop-blur bg-white/85 border border-white shadow-lg flex items-center justify-center active:scale-95 transition"
                   data-idx="${idx}" aria-label="Нравится">
             <span class="text-2xl">${liked ? '❤️' : '🤍'}</span>
           </button>
 
-          <!-- ✅ подняли выше, чтобы не пересекалось с миниатюрами -->
-          <div class="absolute bottom-16 left-4 right-4">
-            <div class="inline-block max-w-[90%] rounded-2xl px-4 py-3 backdrop-blur bg-black/40 border border-white/10">
-              <div class="text-white font-black uppercase text-[16px] leading-tight drop-shadow">
-                ${title}
-              </div>
-              ${(c?.year || c?.power) ? `
-                <div class="mt-1 text-white/85 text-[10px] font-bold uppercase tracking-wider">
-                  ${c?.year ? `${c.year} г.` : ''}${(c?.year && c?.power) ? ' • ' : ''}${c?.power ? safeText(c.power) : ''}
-                </div>
-              ` : ''}
-            </div>
-          </div>
-
-          <div class="absolute bottom-3 right-3 flex gap-1.5 bg-black/25 p-1.5 rounded-2xl backdrop-blur-sm">
+          <div class="absolute bottom-3 right-3 flex gap-1.5 bg-black/20 p-1.5 rounded-2xl backdrop-blur-sm">
             ${photos.slice(0, 5).map((p, tIdx) => `<img src="${p}" class="w-10 h-10 rounded-xl border-2 border-white object-cover cursor-pointer js-thumb" data-idx="${tIdx}">`).join("")}
           </div>
         </div>
 
         <div class="p-6">
+          <!-- ✅ Заголовок под фото -->
+          <div class="mb-4">
+            <div class="font-black uppercase text-[18px] leading-snug text-slate-900">
+              ${title}
+            </div>
+            ${(c?.year || c?.power) ? `
+              <div class="mt-1 text-[11px] font-black uppercase tracking-widest text-slate-500">
+                ${c?.year ? `${c.year} г.` : ''}${(c?.year && c?.power) ? ' • ' : ''}${c?.power ? safeText(c.power) : ''}
+              </div>
+            ` : ''}
+          </div>
+
           <div class="space-y-2 text-[13px] font-bold text-slate-500 uppercase mb-6">
             <div>📍 ПРОБЕГ: <span class="text-slate-900">${safeText(c.km)}</span></div>
             <div>📅 ГОД: <span class="text-slate-900">${safeText(c.year)} г.</span></div>
