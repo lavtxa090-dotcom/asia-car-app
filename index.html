@@ -250,7 +250,6 @@
       // A
       "AUDI": ["A1","A3","A3 SPORTBACK","A4","A4L","A5","A5L","A6","A6L","A7","Q2L","Q3","Q3 SPORTBACK","Q5","Q5L","Q7","Q8","E-TRON"],
       "AION": ["AION S","AION Y","AION V","AION LX"],
-
       // B
       "BMW": ["1 SERIES","2 SERIES","3 SERIES","4 SERIES","5 SERIES","7 SERIES","X1","X2","X3","X4","X5","X6","X7","I3","I4","I5","I7","IX1","IX3","IX","M3","M4","X5 M","XM"],
       "MERCEDES-BENZ": ["A-CLASS","B-CLASS","C-CLASS","E-CLASS","S-CLASS","CLA","CLS","GLA","GLB","GLC","GLE","GLS","G-CLASS","V-CLASS","EQA","EQB","EQC","EQE","EQS","EQE SUV","EQS SUV"],
@@ -263,7 +262,6 @@
       "PEUGEOT": ["2008","3008","4008","408","508L"],
       "BAIC": ["BJ40","BJ60","BJ80"],
       "BORGWARD": ["BX5","BX7"],
-
       // C
       "CHANGAN": ["EADO","YIDA","UNI-V","UNI-T","UNI-K","CS35 PLUS","CS55 PLUS","CS75 PLUS","X5 PLUS","X7 PLUS"],
       "GREAT WALL": ["CANNON","POER","WINGLE"],
@@ -271,84 +269,68 @@
       "CHEVROLET": ["CRUZE","MALIBU XL","EQUINOX"],
       "CITROEN": ["C5 X","C5 AIRCROSS","C6"],
       "CADILLAC": ["CT4","CT5","CT6","XT4","XT5","XT6","LYRIQ"],
-
       // D
       "VOLKSWAGEN": ["POLO","POLO PLUS","LAVIDA","LAMANDO","SAGITAR","BORA","PASSAT","MAGOTAN","TIGUAN L","TAYRON","TERAMONT","ID.3","ID.4","ID.6","TOUAREG"],
       "DONGFENG": ["AEOLUS YIXUAN","AX7","FENGXING"],
       "DS": ["DS 7","DS 9"],
       "DACIA": ["DUSTER"],
-
       // F
       "TOYOTA": ["COROLLA","LEVIN","CAMRY","AVALON","RAV4","COROLLA CROSS","HIGHLANDER","WILDLANDER","SIENNA","CROWN"],
       "FORD": ["FOCUS","MONDEO","EDGE","EXPLORER"],
       "FIAT": ["VIAGGIO","OTTIMO"],
       "FOTON": ["TUNLAND"],
-
       // G
       "GAC": ["GS3","GS4","GS8","M6","M8"],
       "GEELY": ["EMGRAND","BINRUI","XINGRUI","BOYUE","BOYUE L","XINGYUE L"],
       "ZEEKR": ["001","009","X","007"],
       "GENESIS": ["G70","G80","G90","GV70","GV80"],
       "GMC": ["YUKON","SIERRA"],
-
       // H
       "HAVAL": ["H6","BIG DOG","SECOND GEN BIG DOG","F7","F7X","H9"],
       "HONGQI": ["H5","H9","HS5","HS7","E-HS9"],
       "HAIMA": ["7X"],
       "HUMMER": ["H2","H3","HUMMER EV"],
       "HIPHI": ["HIPHI X","HIPHI Z","HIPHI Y"],
-
       // J
       "JAGUAR": ["XEL","XFL","F-PACE","E-PACE"],
       "JETOUR": ["X70","X90","DASHENG"],
       "JEEP": ["COMPASS","CHEROKEE","WRANGLER","GRAND CHEROKEE"],
       "JAC": ["REFINE","S3","S4","S7"],
       "JMC": ["YUSHENG S350"],
-
       // K
       "KIA": ["K3","K5","KX3","SPORTAGE","SORENTO"],
-
       // L
       "LEXUS": ["ES","NX","RX","UX","LS"],
       "LI AUTO": ["L6","L7","L8","L9","MEGA"],
       "LYNK & CO": ["01","02","03","05","06","07","08","09"],
-
       // M
       "MAZDA": ["MAZDA3","MAZDA6","CX-5","CX-30","CX-50","CX-9"],
       "MG": ["MG5","MG6","MG4 EV","MG7"],
       "MINI": ["3-DOOR","5-DOOR","COUNTRYMAN","CLUBMAN"],
-
       // N
       "NISSAN": ["SYLPHY","ALTIMA","QASHQAI","X-TRAIL","MURANO"],
       "NIO": ["ES6","ES7","ES8","EC6","EC7","ET5","ET5T","ET7"],
-
       // O
       "ORA": ["GOOD CAT","LIGHTNING CAT","BALLET CAT"],
       "OPEL": ["INSIGNIA"],
       "ACURA": ["CDX","RDX","MDX"],
-
       // R
       "RENAULT": ["KOLEOS","CAPTUR"],
       "ROEWE": ["I5","I6","RX5","RX8"],
       "RAM": ["RAM 1500","RAM 2500"],
       "RIMAC": ["NEVERA"],
-
       // S
       "SKODA": ["OCTAVIA","SUPERB","KODIAQ","KAROQ"],
       "SUBARU": ["FORESTER","OUTBACK","CROSSTREK"],
       "SUZUKI": ["VITARA"],
       "SMART": ["SMART #1","SMART #3"],
-
       // T
       "TANK": ["300","400","500","700"],
-
       // V
       "VOLVO": ["S60","S90","XC40","XC60","XC90","EX30","EX90"],
-
       // W
       "WULING": ["HONGGUANG MINI EV","BINGUO"],
       "WM MOTOR": ["EX5","W6","E5"],
-
       // X
       "XPENG": ["G3","P5","P7","P7I","G6","G9","X9"],
       "XIAOMI": ["SU7"]
@@ -493,7 +475,7 @@
           }
           io.unobserve(img);
         });
-      }, { rootMargin: '600px 0px' });
+      }, { rootMargin: '250px 0px' }); // ✅ было 600px
     }
 
     function hookLazyImages(){
@@ -511,9 +493,11 @@
 
           const photos = JSON.parse(main.dataset.photos || '[]');
           const nextUrl = photos[idx];
+          if (!nextUrl) return;
 
-          main.setAttribute('data-src', nextUrl);
-          hookLazyImages();
+          // ✅ мгновенно меняем src (без ожидания IO)
+          main.src = nextUrl;
+          main.removeAttribute('data-src');
         };
       });
 
@@ -773,16 +757,20 @@
       const title = safeText(c?.name, '').trim() || 'Автомобиль';
 
       const mainPhoto = c.photo || photos[0] || '';
-      const thumbs = photos.slice(0, 5);
+      const thumbs = photos.slice(0, 2); // ✅ было 5
+
+      const eager = idx < 2; // ✅ первые 2 карточки грузим сразу
 
       return `
       <div class="js-card bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100">
         <div class="relative">
-          <img data-src="${mainPhoto}"
+          <img ${eager ? `src="${mainPhoto}"` : `data-src="${mainPhoto}"`}
                alt="Фото авто"
                class="w-full h-64 object-cover js-main-photo"
                decoding="async"
-               loading="lazy"
+               loading="${eager ? 'eager' : 'lazy'}"
+               fetchpriority="${eager ? 'high' : 'auto'}"
+               onerror="this.onerror=null;this.src='https://img.dongchedi.com/img/default-car.png';"
                data-photos='${escapeForDataAttr(JSON.stringify(photos))}'
                data-index="0">
 
@@ -799,6 +787,7 @@
                       class="w-10 h-10 rounded-xl border-2 border-white object-cover cursor-pointer js-thumb"
                       decoding="async"
                       loading="lazy"
+                      onerror="this.onerror=null;this.src='https://img.dongchedi.com/img/default-car.png';"
                       data-idx="${tIdx}">`
               ).join("")}
             </div>
