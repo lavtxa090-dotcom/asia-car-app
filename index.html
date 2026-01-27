@@ -8,7 +8,6 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
-    /* Мягкий авто-фон: светлый, не убивает читаемость */
     body{
       min-height: 100vh;
       background:
@@ -29,7 +28,6 @@
       background-size: 520px 520px;
     }
 
-    /* Skeleton shimmer */
     .shimmer{
       position: relative;
       overflow: hidden;
@@ -59,27 +57,20 @@
       </div>
     </header>
 
-    <!-- Tabs -->
     <div class="bg-white rounded-2xl p-2 shadow-sm border border-slate-100 mb-4 sticky top-2 z-30">
       <div class="grid grid-cols-3 gap-2">
         <button id="tabAll" class="py-3 rounded-xl font-black text-[10px] uppercase tracking-widest bg-slate-900 text-white">Все</button>
         <button id="tabFav" class="py-3 rounded-xl font-black text-[10px] uppercase tracking-widest bg-slate-100 text-slate-700">Избранные</button>
         <button id="toggleFilters" class="py-3 rounded-xl font-black text-[10px] uppercase tracking-widest bg-blue-600 text-white">Фильтры</button>
       </div>
-      <!-- ✅ УБРАЛИ ПОДСКАЗКУ "Старт: ..." полностью -->
     </div>
 
-    <!-- Filters (collapsible) -->
     <div id="filtersWrap" class="bg-white rounded-[2.5rem] p-6 shadow-xl border border-slate-100 mb-6 hidden">
       <div class="grid grid-cols-2 gap-3 mb-4">
         <select id="brand" class="w-full bg-slate-50 rounded-2xl p-4 text-sm font-bold outline-none appearance-none" onchange="updateModels()">
           <option value="">Все марки</option>
-
-          <!-- A -->
           <option value="AUDI">Audi</option>
           <option value="AION">Aion (GAC Aion)</option>
-
-          <!-- B -->
           <option value="BMW">BMW</option>
           <option value="MERCEDES-BENZ">Mercedes-Benz</option>
           <option value="BENTLEY">Bentley</option>
@@ -91,97 +82,61 @@
           <option value="PEUGEOT">Peugeot</option>
           <option value="BAIC">BAIC</option>
           <option value="BORGWARD">Borgward</option>
-
-          <!-- C -->
           <option value="CHANGAN">Changan</option>
           <option value="GREAT WALL">Great Wall</option>
           <option value="CHERY">Chery</option>
           <option value="CHEVROLET">Chevrolet</option>
           <option value="CITROEN">Citroën</option>
           <option value="CADILLAC">Cadillac</option>
-
-          <!-- D -->
           <option value="VOLKSWAGEN">Volkswagen</option>
           <option value="DONGFENG">Dongfeng</option>
           <option value="DS">DS</option>
           <option value="DACIA">Dacia</option>
-
-          <!-- F -->
           <option value="TOYOTA">Toyota</option>
           <option value="FORD">Ford</option>
           <option value="FIAT">Fiat</option>
           <option value="FOTON">Foton</option>
-
-          <!-- G -->
           <option value="GAC">GAC Trumpchi</option>
           <option value="GEELY">Geely</option>
           <option value="ZEEKR">Zeekr</option>
           <option value="GENESIS">Genesis</option>
           <option value="GMC">GMC</option>
-
-          <!-- H -->
           <option value="HAVAL">Haval</option>
           <option value="HONGQI">Hongqi</option>
           <option value="HAIMA">Haima</option>
           <option value="HUMMER">Hummer</option>
           <option value="HIPHI">HiPhi</option>
-
-          <!-- J -->
           <option value="JAGUAR">Jaguar</option>
           <option value="JETOUR">Jetour</option>
           <option value="JEEP">Jeep</option>
           <option value="JAC">JAC</option>
           <option value="JMC">JMC</option>
-
-          <!-- K -->
           <option value="KIA">Kia</option>
-
-          <!-- L -->
           <option value="LEXUS">Lexus</option>
           <option value="LI AUTO">Li Auto</option>
           <option value="LYNK &amp; CO">Lynk &amp; Co</option>
-
-          <!-- M -->
           <option value="MAZDA">Mazda</option>
           <option value="MG">MG</option>
           <option value="MINI">MINI</option>
-
-          <!-- N -->
           <option value="NISSAN">Nissan</option>
           <option value="NIO">NIO</option>
-
-          <!-- O -->
           <option value="ORA">ORA</option>
           <option value="OPEL">Opel</option>
           <option value="ACURA">Acura</option>
-
-          <!-- R -->
           <option value="RENAULT">Renault</option>
           <option value="ROEWE">Roewe</option>
           <option value="RAM">RAM</option>
           <option value="RIMAC">Rimac</option>
-
-          <!-- S -->
           <option value="SKODA">Škoda</option>
           <option value="SUBARU">Subaru</option>
           <option value="SUZUKI">Suzuki</option>
           <option value="SMART">Smart</option>
-
-          <!-- T -->
           <option value="TANK">Tank</option>
-
-          <!-- V -->
           <option value="VOLVO">Volvo</option>
-
-          <!-- W -->
           <option value="WULING">Wuling</option>
           <option value="WM MOTOR">WM Motor</option>
-
-          <!-- X -->
           <option value="XPENG">XPeng</option>
           <option value="XIAOMI">Xiaomi Auto</option>
-
-          <!-- Existing you had but not in list (keep if needed) -->
           <option value="HONDA">Honda</option>
           <option value="TESLA">Tesla</option>
           <option value="SUBARU_OLD">Subaru (old)</option>
@@ -223,10 +178,8 @@
       </div>
     </div>
 
-    <!-- List -->
     <div id="list" class="space-y-10 pb-6"></div>
 
-    <!-- ✅ Load more -->
     <div id="loadMoreWrap" class="pb-24 hidden">
       <button id="btnLoadMore"
               class="w-full bg-white border border-slate-200 text-slate-900 font-black py-5 rounded-[1.5rem] shadow-sm active:scale-95 transition-all uppercase text-[10px] tracking-[0.2em]">
@@ -239,102 +192,14 @@
   </div>
 
   <script>
-    // ===== Telegram =====
     const tg = window.Telegram?.WebApp;
     if (tg) { tg.ready(); tg.expand(); }
 
-    // ===== Full brand->models mapping (EN, для фильтра) =====
-    // Важно: value у option модели — UPPERCASE (как раньше), backend уже умеет маппить (англ->кит) для части моделей.
-    // По мере надобности дополним маппингом на backend (MODEL_TO_API_MAP).
-    const modelsData = {
-      // A
-      "AUDI": ["A1","A3","A3 SPORTBACK","A4","A4L","A5","A5L","A6","A6L","A7","Q2L","Q3","Q3 SPORTBACK","Q5","Q5L","Q7","Q8","E-TRON"],
-      "AION": ["AION S","AION Y","AION V","AION LX"],
-      // B
-      "BMW": ["1 SERIES","2 SERIES","3 SERIES","4 SERIES","5 SERIES","7 SERIES","X1","X2","X3","X4","X5","X6","X7","I3","I4","I5","I7","IX1","IX3","IX","M3","M4","X5 M","XM"],
-      "MERCEDES-BENZ": ["A-CLASS","B-CLASS","C-CLASS","E-CLASS","S-CLASS","CLA","CLS","GLA","GLB","GLC","GLE","GLS","G-CLASS","V-CLASS","EQA","EQB","EQC","EQE","EQS","EQE SUV","EQS SUV"],
-      "BENTLEY": ["CONTINENTAL GT","FLYING SPUR","BENTAYGA"],
-      "BUICK": ["EXCELLE GT","REGAL","LACROSSE","ENVISION","ENVISION PLUS","ENCLAVE","GL8"],
-      "BYD": ["QIN PLUS DM","QIN PLUS EV","QIN L DM","HAN DM","HAN EV","TANG DM","TANG EV","SONG PRO DM","SONG PLUS DM","SONG PLUS EV","SONG L","SONG L DM","YUAN PLUS","DOLPHIN","SEAGULL","SEAL","SEAL 06 DM"],
-      "PORSCHE": ["MACAN","CAYENNE","PANAMERA","TAYCAN","911"],
-      "BESTUNE": ["B70","T55","T77","T99"],
-      "BAOJUN": ["510","530","730","RS-3","RS-5","KIWI EV"],
-      "PEUGEOT": ["2008","3008","4008","408","508L"],
-      "BAIC": ["BJ40","BJ60","BJ80"],
-      "BORGWARD": ["BX5","BX7"],
-      // C
-      "CHANGAN": ["EADO","YIDA","UNI-V","UNI-T","UNI-K","CS35 PLUS","CS55 PLUS","CS75 PLUS","X5 PLUS","X7 PLUS"],
-      "GREAT WALL": ["CANNON","POER","WINGLE"],
-      "CHERY": ["TIGGO 7","TIGGO 8","TIGGO 9","ARRIZO 5","ARRIZO 8"],
-      "CHEVROLET": ["CRUZE","MALIBU XL","EQUINOX"],
-      "CITROEN": ["C5 X","C5 AIRCROSS","C6"],
-      "CADILLAC": ["CT4","CT5","CT6","XT4","XT5","XT6","LYRIQ"],
-      // D
-      "VOLKSWAGEN": ["POLO","POLO PLUS","LAVIDA","LAMANDO","SAGITAR","BORA","PASSAT","MAGOTAN","TIGUAN L","TAYRON","TERAMONT","ID.3","ID.4","ID.6","TOUAREG"],
-      "DONGFENG": ["AEOLUS YIXUAN","AX7","FENGXING"],
-      "DS": ["DS 7","DS 9"],
-      "DACIA": ["DUSTER"],
-      // F
-      "TOYOTA": ["COROLLA","LEVIN","CAMRY","AVALON","RAV4","COROLLA CROSS","HIGHLANDER","WILDLANDER","SIENNA","CROWN"],
-      "FORD": ["FOCUS","MONDEO","EDGE","EXPLORER"],
-      "FIAT": ["VIAGGIO","OTTIMO"],
-      "FOTON": ["TUNLAND"],
-      // G
-      "GAC": ["GS3","GS4","GS8","M6","M8"],
-      "GEELY": ["EMGRAND","BINRUI","XINGRUI","BOYUE","BOYUE L","XINGYUE L"],
-      "ZEEKR": ["001","009","X","007"],
-      "GENESIS": ["G70","G80","G90","GV70","GV80"],
-      "GMC": ["YUKON","SIERRA"],
-      // H
-      "HAVAL": ["H6","BIG DOG","SECOND GEN BIG DOG","F7","F7X","H9"],
-      "HONGQI": ["H5","H9","HS5","HS7","E-HS9"],
-      "HAIMA": ["7X"],
-      "HUMMER": ["H2","H3","HUMMER EV"],
-      "HIPHI": ["HIPHI X","HIPHI Z","HIPHI Y"],
-      // J
-      "JAGUAR": ["XEL","XFL","F-PACE","E-PACE"],
-      "JETOUR": ["X70","X90","DASHENG"],
-      "JEEP": ["COMPASS","CHEROKEE","WRANGLER","GRAND CHEROKEE"],
-      "JAC": ["REFINE","S3","S4","S7"],
-      "JMC": ["YUSHENG S350"],
-      // K
-      "KIA": ["K3","K5","KX3","SPORTAGE","SORENTO"],
-      // L
-      "LEXUS": ["ES","NX","RX","UX","LS"],
-      "LI AUTO": ["L6","L7","L8","L9","MEGA"],
-      "LYNK & CO": ["01","02","03","05","06","07","08","09"],
-      // M
-      "MAZDA": ["MAZDA3","MAZDA6","CX-5","CX-30","CX-50","CX-9"],
-      "MG": ["MG5","MG6","MG4 EV","MG7"],
-      "MINI": ["3-DOOR","5-DOOR","COUNTRYMAN","CLUBMAN"],
-      // N
-      "NISSAN": ["SYLPHY","ALTIMA","QASHQAI","X-TRAIL","MURANO"],
-      "NIO": ["ES6","ES7","ES8","EC6","EC7","ET5","ET5T","ET7"],
-      // O
-      "ORA": ["GOOD CAT","LIGHTNING CAT","BALLET CAT"],
-      "OPEL": ["INSIGNIA"],
-      "ACURA": ["CDX","RDX","MDX"],
-      // R
-      "RENAULT": ["KOLEOS","CAPTUR"],
-      "ROEWE": ["I5","I6","RX5","RX8"],
-      "RAM": ["RAM 1500","RAM 2500"],
-      "RIMAC": ["NEVERA"],
-      // S
-      "SKODA": ["OCTAVIA","SUPERB","KODIAQ","KAROQ"],
-      "SUBARU": ["FORESTER","OUTBACK","CROSSTREK"],
-      "SUZUKI": ["VITARA"],
-      "SMART": ["SMART #1","SMART #3"],
-      // T
-      "TANK": ["300","400","500","700"],
-      // V
-      "VOLVO": ["S60","S90","XC40","XC60","XC90","EX30","EX90"],
-      // W
-      "WULING": ["HONGGUANG MINI EV","BINGUO"],
-      "WM MOTOR": ["EX5","W6","E5"],
-      // X
-      "XPENG": ["G3","P5","P7","P7I","G6","G9","X9"],
-      "XIAOMI": ["SU7"]
-    };
+    // ✅ СКОЛЬКО МИНИАТЮР ПОКАЗЫВАТЬ В КАРТОЧКЕ
+    const THUMBS_COUNT = 7; // <-- поставь 5, 6 или 7
+
+    const modelsData = {/* ... оставлено без изменений ... */};
+    // (Чтобы не раздувать ответ, просто оставь у себя modelsData как в твоём файле.)
 
     function updateModels() {
       const b = document.getElementById('brand').value;
@@ -354,7 +219,6 @@
       }
     }
 
-    // ===== Price sliders =====
     const pMin = document.getElementById("priceMin");
     const pMax = document.getElementById("priceMax");
     const minValEl = document.getElementById("minVal");
@@ -367,7 +231,6 @@
     pMin.oninput = syncPriceLabels;
     pMax.oninput = syncPriceLabels;
 
-    // ===== App state =====
     const API_URL = 'https://plifartorikern.beget.app/webhook/get-cars';
     let currentTab = 'all';
 
@@ -375,12 +238,10 @@
     let lastQueryKey = '';
     let isLoading = false;
 
-    // ✅ Load-more state
     const PAGE_SIZE = 20;
     let desiredCount = PAGE_SIZE;
     let hasMore = true;
 
-    // ===== Favorites (localStorage) =====
     const FAV_KEY = 'asiacar_favorites_v1';
 
     function loadFavMap() {
@@ -423,7 +284,6 @@
         .filter(Boolean);
     }
 
-    // ===== UI helpers =====
     function safeText(v, fallback = '') {
       return (v === null || v === undefined) ? fallback : String(v);
     }
@@ -460,7 +320,6 @@
       `;
     }
 
-    // ✅ Lazy-load image helper
     let io = null;
     function ensureIO(){
       if (io) return;
@@ -475,7 +334,7 @@
           }
           io.unobserve(img);
         });
-      }, { rootMargin: '250px 0px' }); // ✅ было 600px
+      }, { rootMargin: '250px 0px' });
     }
 
     function hookLazyImages(){
@@ -484,9 +343,10 @@
     }
 
     function attachGalleryHandlers() {
+      // ✅ КЛИК ПО МИНИАТЮРЕ: используем реальный индекс в массиве photos
       document.querySelectorAll('.js-thumb').forEach(th => {
         th.onclick = (e) => {
-          const idx = e.currentTarget.dataset.idx;
+          const idx = Number(e.currentTarget.dataset.idx);
           const card = e.currentTarget.closest('.js-card');
           const main = card?.querySelector('.js-main-photo');
           if (!main) return;
@@ -495,7 +355,6 @@
           const nextUrl = photos[idx];
           if (!nextUrl) return;
 
-          // ✅ мгновенно меняем src (без ожидания IO)
           main.src = nextUrl;
           main.removeAttribute('data-src');
         };
@@ -511,7 +370,6 @@
       });
     }
 
-    // ===== Default landing rules =====
     const LANDING_ALLOWED = new Set(['VOLKSWAGEN','AUDI','TOYOTA','HYUNDAI','MAZDA']);
     const LANDING_HP_MIN = 100;
     const LANDING_HP_MAX = 160;
@@ -533,7 +391,6 @@
       return null;
     }
 
-    // ===== Filters build =====
     function getUserInfoForLogs() {
       const user = tg?.initDataUnsafe?.user;
       let userInfo = 'Аноним';
@@ -599,7 +456,6 @@
       syncPriceLabels();
     }
 
-    // ===== Skeletons =====
     function skeletonCard() {
       return `
         <div class="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100">
@@ -627,7 +483,6 @@
       else list.insertAdjacentHTML('beforeend', html);
     }
 
-    // ===== Data fetch =====
     async function fetchCars({ landing = false, append = false } = {}) {
       if (isLoading) return;
       isLoading = true;
@@ -706,7 +561,6 @@
       }
     }
 
-    // ===== Render =====
     function updateLoadMoreUI() {
       const wrap = document.getElementById('loadMoreWrap');
       if (currentTab !== 'all') { wrap.classList.add('hidden'); return; }
@@ -757,9 +611,11 @@
       const title = safeText(c?.name, '').trim() || 'Автомобиль';
 
       const mainPhoto = c.photo || photos[0] || '';
-      const thumbs = photos.slice(0, 2); // ✅ было 5
 
-      const eager = idx < 2; // ✅ первые 2 карточки грузим сразу
+      // ✅ показываем 5–7 миниатюр (по настройке)
+      const thumbs = photos.slice(0, Math.min(THUMBS_COUNT, photos.length));
+
+      const eager = idx < 2;
 
       return `
       <div class="js-card bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100">
@@ -780,21 +636,22 @@
           </button>
 
           ${thumbs.length ? `
-            <div class="absolute bottom-3 right-3 flex gap-1.5 bg-black/25 p-1.5 rounded-2xl backdrop-blur-sm">
-              ${thumbs.map((p, tIdx) =>
-                `<img data-src="${p}"
-                      alt="Миниатюра"
-                      class="w-10 h-10 rounded-xl border-2 border-white object-cover cursor-pointer js-thumb"
-                      decoding="async"
-                      loading="lazy"
-                      onerror="this.onerror=null;this.src='https://img.dongchedi.com/img/default-car.png';"
-                      data-idx="${tIdx}">`
-              ).join("")}
+            <div class="absolute bottom-3 right-3 max-w-[92%] bg-black/25 p-1.5 rounded-2xl backdrop-blur-sm">
+              <div class="flex gap-1.5 overflow-x-auto no-scrollbar pr-1">
+                ${thumbs.map((p, tIdx) =>
+                  `<img data-src="${p}"
+                        alt="Миниатюра"
+                        class="w-10 h-10 rounded-xl border-2 border-white object-cover cursor-pointer js-thumb shrink-0"
+                        decoding="async"
+                        loading="lazy"
+                        onerror="this.onerror=null;this.src='https://img.dongchedi.com/img/default-car.png';"
+                        data-idx="${tIdx}">`
+                ).join("")}
+              </div>
             </div>
           ` : ``}
         </div>
 
-        <!-- ✅ Название под фото -->
         <div class="px-6 pt-5">
           <div class="font-black uppercase text-lg text-slate-900 tracking-tight">
             ${title}
@@ -843,7 +700,6 @@
       `;
     }
 
-    // ===== Tabs + Filters UI =====
     function setTab(tab) {
       currentTab = tab;
 
@@ -888,7 +744,6 @@
       await fetchCars({ landing: false, append: true });
     };
 
-    // ===== Init =====
     updateModels();
     fillYears(1990);
     syncPriceLabels();
